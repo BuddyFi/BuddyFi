@@ -1,5 +1,5 @@
 - name: Build Program
   run: |
     cd contracts/buddyfi-program
-    cargo build-bpf
+    cargo build-bpf -- -Znext-lockfile-bump
     solana program deploy target/deploy/buddyfi_program.so
