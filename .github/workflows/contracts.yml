@@ -1,5 +1,37 @@
-- name: Build Program
-  run: |
-    cd contracts/buddyfi-program
-    cargo build-bpf -- -Znext-lockfile-bump
-    solana program deploy target/deploy/buddyfi_program.so
+name: Build Program
+
+on: 
+  push:
+    paths:
+      - 'contracts/**'
+    pull_request:
+      paths:
+        - 'contracts/**'
+
+jobs: 
+  build-program:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          submodules: true # in case if using submodules
+
+      - name: Install Solana CLI
+        run:  |
+          sh -c "$(curl -sSfL https://release.solana.com/v1.18.26/install)"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana --version
+
+      - name: Install Rust + BPF
+        run: |
+          rustup update
+          rustup target add bpfel-unknown-unknown
+          cargo install --git https://github.com/solana-labs/solana --tag v1.18.26 cargo-build-bpf
+
+      - name: Build BuddyFi Program
+        run: |
+        cd contracts/buddyfi-program
+        cargo build-bpf -- -Znext-lockfile-bump
+        solana program deploy target/deploy/buddyfi_program.so
