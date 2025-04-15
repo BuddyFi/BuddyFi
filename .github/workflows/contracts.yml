@@ -32,6 +32,6 @@ jobs:
 
       - name: Build BuddyFi Program
         run: |
-        cd contracts/buddyfi-program
-        cargo build-bpf -- -Znext-lockfile-bump
-        solana program deploy target/deploy/buddyfi_program.so
+          cd contracts/buddyfi-program
+          cargo build-bpf -- -Znext-lockfile-bump
+          solana program deploy target/deploy/buddyfi_program.so
