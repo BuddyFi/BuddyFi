@@ -22,32 +22,45 @@ jobs:
       - name: Install Solana CLI
         run: |
           sh -c "$(curl -sSfL https://release.solana.com/v1.18.26/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           solana --version
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
       
-      - name: Setup Rust
+      # Use a specific rust toolchain compatible with Solana BPF
+      - name: Setup Rust with specific version for Solana BPF
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: 1.72.0  # Specific version known to work with Solana 1.18.x
           override: true
-          components: rustfmt, clippy
       
-      - name: Add BPF target
+      - name: Add BPF target and Solana dependencies
         run: |
-          rustup target add bpfel-unknown-unknown
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-          solana --version
+          
+          cargo install solana-program
+          
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked
+          avm install latest
+          avm use latest
+          
+          rustup target add bpfel-unknown-unknown || true
+          
+          cargo install cargo-build-bpf || true
 
       - name: Build BuddyFi Program
         run: |
           cd contracts/buddyfi-program
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-          cargo build-bpf
+          
+          cargo build-bpf || \
+          cargo build --target bpfel-unknown-unknown || \
+          ~/.local/share/solana/install/active_release/bin/cargo-build-bpf
       
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
           name: program-artifacts
-          path: contracts/buddyfi-program/target/deploy/
+          path: |
+            contracts/buddyfi-program/target/deploy/
+            contracts/buddyfi-program/target/bpfel-unknown-unknown/release/
