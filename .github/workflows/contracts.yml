@@ -27,11 +27,11 @@ jobs:
           solana --version
 
       - name: Install Rust nightly and BPF target
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          source $HOME/.cargo/env
-          rustup default nightly
-          rustup target add bpfel-unknown-unknown
+          run: |
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly-2023-10-05
+            source $HOME/.cargo/env
+            rustup target add bpfel-unknown-unknown
+
 
       - name: Build BuddyFi Program
         run: |
