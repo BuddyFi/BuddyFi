@@ -1,40 +1,52 @@
+name: Build Solana Program
 
-name: Build Program
-
-on: 
+on:
   workflow_dispatch:
   push:
     paths:
       - 'contracts/**'
-    pull_request:
-      paths:
-        - 'contracts/**'
+  pull_request:
+    paths:
+      - 'contracts/**'
 
-jobs: 
+jobs:
   build-program:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          submodules: true # in case if using submodules
-
+          submodules: true
+      
       - name: Install Solana CLI
-        run:  |
+        run: |
           sh -c "$(curl -sSfL https://release.solana.com/v1.18.26/install)"
-          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
           solana --version
-
-      - name: Install Rust nightly and BPF target
-          run: |
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly-2023-10-05
-            source $HOME/.cargo/env
-            rustup target add bpfel-unknown-unknown
-
-
+      
+      - name: Setup Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly-2023-05-10
+          override: true
+      
+      - name: Add BPF target
+        run: |
+          rustup target add bpfel-unknown-unknown
+      
+      - name: Install Solana BPF tools
+        run: |
+          cargo install solana-sdk-bpf
+      
       - name: Build BuddyFi Program
         run: |
           cd contracts/buddyfi-program
-          cargo build-bpf -- -Znext-lockfile-bump
-          solana program deploy target/deploy/buddyfi_program.so
+          cargo build-bpf
+      
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: program-artifacts
+          path: contracts/buddyfi-program/target/deploy/
