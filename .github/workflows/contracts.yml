@@ -23,23 +23,23 @@ jobs:
         run: |
           sh -c "$(curl -sSfL https://release.solana.com/v1.18.26/install)"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+      
+      - name: Setup Rust and BPF toolchain
+        run: |
+          # Install the Rust toolchain that Solana expects
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source $HOME/.cargo/env
+          
+          # Let Solana install the specific compatible toolchain with BPF support
+          ~/.local/share/solana/install/active_release/bin/solana-install init
+          
+          # Verify installations
           solana --version
-      
-      - name: Setup Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly-2023-05-10
-          override: true
-      
-      - name: Add BPF target
-        run: |
+          rustc --version
+          
+          # Explicitly add the BPF target
           rustup target add bpfel-unknown-unknown
-      
-      - name: Install Solana BPF tools
-        run: |
-          cargo install solana-sdk-bpf
-      
+
       - name: Build BuddyFi Program
         run: |
           cd contracts/buddyfi-program
