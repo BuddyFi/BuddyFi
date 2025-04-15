@@ -1,6 +1,7 @@
 name: Build WebApp
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'apps/web/**'  # Only trigger for changes in the webapp folder
