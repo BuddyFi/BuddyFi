@@ -1,0 +1,5 @@
+- name: Build Program
+  run: |
+    cd contracts/buddyfi-program
+    cargo build-bpf
+    solana program deploy target/deploy/buddyfi_program.so
