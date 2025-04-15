@@ -26,11 +26,12 @@ jobs:
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           solana --version
 
-      - name: Install Rust + BPF
+      - name: Install Rust nightly and BPF target
         run: |
-          rustup update
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          source $HOME/.cargo/env
+          rustup default nightly
           rustup target add bpfel-unknown-unknown
-          cargo install --git https://github.com/solana-labs/solana --tag v1.18.26 cargo-build-bpf
 
       - name: Build BuddyFi Program
         run: |
