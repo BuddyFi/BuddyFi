@@ -1,16 +1,13 @@
-// app/create-profile/page.tsx
-'use client';
+import Navbar from '@/components/Navbar'
+import React from 'react'
 
-import Navbar from '@/components/Navbar';
-import ProfileCreator from '@/components/ProfileCreator';
-
-export default function CreateProfilePage() {
+const page = () => {
   return (
-    <div>
-      <Navbar />
-      <div className="container mx-auto px-4 py-8">
-        <ProfileCreator />
-      </div>
-    </div>
-  );
+    <>
+    <Navbar/>
+    <div className='text-3xl uppercase flex justify-center mt-20'>work in progress</div>
+    </>
+  )
 }
+
+export default page
