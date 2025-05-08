@@ -5,6 +5,8 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useWallet } from "@solana/wallet-adapter-react";
+import Link from "next/link";
+import { Twitter, Github, Linkedin } from "lucide-react";
 
 type IpfsData = {
   name: string;
@@ -69,30 +71,38 @@ export default function ProfileDisplay() {
   const { name, bio, skills, avatar, social, walletAddress } = data;
 
   return (
-    <div ref={cardRef} className="p-6 space-y-4 text-white bg-gray-900 rounded-lg">
-      <div className="flex items-center space-x-4">
+    <div
+      ref={cardRef}
+      className="p-6 space-y-6 text-white bg-gray-900 rounded-xl shadow-lg"
+    >
+      {/* Header */}
+      <div className="flex items-center space-x-5">
         <img
-          src={avatar || "/default-avatar.png"}
-          alt={name}
-          className="w-24 h-24 rounded-full border-2 border-indigo-500 object-cover"
+          src={avatar || "/globe.svg"}
+          className="w-24 h-24 rounded-full object-cover"
         />
         <div>
           <h2 className="text-2xl font-bold">{name}</h2>
-          <p className="text-sm text-gray-400">
-            {walletAddress.slice(0, 6)}…{walletAddress.slice(-6)}
+          <p className="text-sm text-gray-400 italic">{bio}</p>
+          <p className="text-xs text-gray-500 mt-1">
+            Onchain profile • Solana + IPFS powered
+          </p>
+          <p className="text-sm text-gray-400 mt-2">
+            Wallet: {walletAddress.slice(0, 6)}…{walletAddress.slice(-6)}
           </p>
         </div>
       </div>
 
-      <p className="text-gray-200">{bio}</p>
-
+      {/* Skills */}
       <div>
-        <h3 className="text-sm uppercase text-indigo-400 mb-2">Skills</h3>
+        <h3 className="text-sm uppercase text-indigo-400 mb-2 tracking-wide">
+          Skills
+        </h3>
         <div className="flex flex-wrap gap-2">
           {skills.map((skill) => (
             <span
               key={skill}
-              className="px-3 py-1 bg-indigo-700 rounded-full text-xs"
+              className="px-3 py-1 bg-indigo-700 rounded-full text-xs font-medium"
             >
               {skill}
             </span>
@@ -100,47 +110,33 @@ export default function ProfileDisplay() {
         </div>
       </div>
 
-      <div className="flex space-x-4">
-        {social.twitter && (
-          <a
-            href={`https://twitter.com/${social.twitter}`}
-            target="_blank"
-            rel="noreferrer"
-            className="hover:opacity-75 transition"
-          >
-            <img src="/icons/twitter.svg" className="w-6 h-6" />
-          </a>
-        )}
-        {social.linkedin && (
-          <a
-            href={`https://linkedin.com/in/${social.linkedin}`}
-            target="_blank"
-            rel="noreferrer"
-            className="hover:opacity-75 transition"
-          >
-            <img src="/icons/linkedin.svg" className="w-6 h-6" />
-          </a>
-        )}
+      <div className="flex flex-col gap-3 p-4 rounded-lg shadow">
+        <div className="flex gap-2 items-center">
+          <Twitter className="w-4 h-4" />
+          <div>@{social.twitter}</div>
+        </div>
+        <div className="flex gap-2 items-center">
+          <Github className="w-4 h-4" />
+          <div>@{social.github}</div>
+        </div>
+        <div className="flex gap-2 items-center">
+          <Linkedin className="w-4 h-4" />
+          <div>@{social.linkedin}</div>
+        </div>
       </div>
 
-      {social.github ? (
-        <a
-          href={`/dashboard?${social.github}`}
-          rel="noreferrer"
-          className="inline-block px-4 py-2 border border-indigo-500 rounded-full hover:bg-indigo-500 transition"
-        >
-          View GitHub Profile
-        </a>
-      ) : (
-        <button
-          onClick={() => {
-            /* trigger your GitHub OAuth/link flow */
-          }}
-          className="w-full px-4 py-2 bg-indigo-600 rounded-full hover:bg-indigo-500 transition"
-        >
-          Connect GitHub
-        </button>
-      )}
+      {/* GitHub Section */}
+      <div className="pt-4">
+        <div className="mt-2">
+          <Link
+            href={`/dashboard?${social.github}`}
+            rel="noreferrer"
+            className="inline-block px-4 py-2 border border-indigo-500 rounded-full hover:bg-indigo-500 transition"
+          >
+            View GitHub Profile
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

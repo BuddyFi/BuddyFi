@@ -22,7 +22,7 @@ export default function ProfilePage() {
   }, [publicKey]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-900 text-white">
+    <div>
       <Navbar />
       <div className="flex items-center justify-center h-[calc(100vh-4rem)] p-4">
         {!publicKey ? (
