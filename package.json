@@ -15,6 +15,7 @@
     "@solana/wallet-adapter-react": "^0.15.18",
     "@solana/wallet-adapter-react-ui": "^0.9.12",
     "@solana/wallet-adapter-wallets": "^0.17.2",
+    "cookie": "^1.0.2",
     "gsap": "^3.12.7",
     "ipfs-http-client": "^60.0.1",
     "lucide-react": "^0.488.0",

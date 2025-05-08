@@ -38,7 +38,7 @@ export async function fetchFromIPFSWithFallback(cid: string) {
   // Try each gateway until one works
   for (const gateway of gateways) {
     try {
-      console.log('Trying IPFS gateway:', gateway);
+      // console.log('Trying IPFS gateway:', gateway);
       const response = await fetch(gateway);
       
       if (response.ok) {

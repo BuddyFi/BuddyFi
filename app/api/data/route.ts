@@ -30,7 +30,7 @@ export async function GET() {
     }
 
     const data = await response.json();
-    console.log("received data from pinata", data);
+    // console.log("received data from pinata", data);
 
     const pin = data.rows?.[0];
 

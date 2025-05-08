@@ -59,26 +59,26 @@ export const initializeProfile = async (
     [Buffer.from("profile"), publicKey.toBuffer()],
     PROGRAM_ID
   );
-  console.log(
-    "Initializing profile at:",
-    profilePubkey.toBase58(),
-    "with bump:",
-    bump
-  );
-  console.log("For wallet:", publicKey.toBase58());
-  console.log("Using program ID:", PROGRAM_ID.toBase58());
-  console.log("IPFS CID:", ipfsCid);
-  console.log("Skills:", skills);
+  // console.log(
+  //   "Initializing profile at:",
+  //   profilePubkey.toBase58(),
+  //   "with bump:",
+  //   bump
+  // );
+  // console.log("For wallet:", publicKey.toBase58());
+  // console.log("Using program ID:", PROGRAM_ID.toBase58());
+  // console.log("IPFS CID:", ipfsCid);
+  // console.log("Skills:", skills);
 
-  console.log("Derived profile address:", profilePubkey.toString());
+  // console.log("Derived profile address:", profilePubkey.toString());
 
-  const { blockhash, lastValidBlockHeight } =
+  const { blockhash } =
     await connection.getLatestBlockhash("confirmed");
-  const space = 1024; // Adjust based on your needs
-  const rentExemption = await connection.getMinimumBalanceForRentExemption(
-    space
-  );
-  console.log("Rent exemption:", rentExemption);
+  // const space = 1024; // Adjust based on your needs
+  // const rentExemption = await connection.getMinimumBalanceForRentExemption(
+  //   space
+  // );
+  // console.log("Rent exemption:", rentExemption);
 
   // Create account via the program (not SystemProgram directly)
   const createProfileIx = new TransactionInstruction({
@@ -121,16 +121,16 @@ export const initializeProfile = async (
   try {
     // Use the sendTransaction function from wallet adapter
     const signature = await sendTransaction(transaction, connection);
-    console.log("Account created! Signature:", signature);
+    // console.log("Account created! Signature:", signature);
 
     // Wait for confirmation
-    const confirmation = await connection.confirmTransaction({
-      signature,
-      lastValidBlockHeight,
-      blockhash,
-    });
+    // const confirmation = await connection.confirmTransaction({
+    //   signature,
+    //   lastValidBlockHeight,
+    //   blockhash,
+    // });
 
-    console.log("Transaction confirmed:", confirmation);
+    // console.log("Transaction confirmed:", confirmation);
 
     return signature;
   } catch (error) {
@@ -148,7 +148,7 @@ export const fetchProfile = async (
     if (!accountInfo) return null;
 
     // Add debug log for PDA verification
-    console.log("Fetching profile from PDA:", profilePubkey.toString());
+    // console.log("Fetching profile from PDA:", profilePubkey.toString());
 
     // Deserialize with error handling
     const decoded = deserialize(

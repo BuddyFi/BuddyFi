@@ -46,9 +46,9 @@ export default function ProfileCreator() {
         throw new Error(error);
       }
       
-      console.log("IPFS CID:", cid);
+      // console.log("IPFS CID:", cid);
       setCID(cid)
-      console.log("IPFS stored:", cid);
+      // console.log("IPFS stored:", cid);
 
       setIpfsCid(cid);
       
@@ -62,7 +62,7 @@ export default function ProfileCreator() {
       );
       
       setTxId(txSignature);
-      console.log(`Transaction successful! Signature: ${txSignature}`);
+      // console.log(`Transaction successful! Signature: ${txSignature}`);
     } catch (err) {
       console.error("Profile creation error:", err);
       setError(err instanceof Error ? err.message : "Profile creation failed");
