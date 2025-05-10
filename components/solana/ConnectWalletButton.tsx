@@ -35,6 +35,18 @@ export default function ConnectWalletButton() {
         router.push("/profile")
         setShowDropdown(false);
     };
+    const handleBrowseProfile = () => {
+        router.push("/discover")
+        setShowDropdown(false);
+    };
+    const handleViewMatches = () => {
+        router.push("/matches")
+        setShowDropdown(false);
+    };
+    const handleViewMessages = () => {
+        router.push("/messages")
+        setShowDropdown(false);
+    };
 
     const handleDisconnect = () => {
         disconnect();
@@ -74,6 +86,25 @@ export default function ConnectWalletButton() {
                         >
                             View Profile
                         </li>
+                        <li 
+                            className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
+                            onClick={handleBrowseProfile}
+                        >
+                            Browse Profiles
+                        </li>
+                        <li 
+                            className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
+                            onClick={handleViewMatches}
+                        >
+                            View Matches
+                        </li>
+                        <li 
+                            className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
+                            onClick={handleViewMessages}
+                        >
+                            View Messages
+                        </li>
+                        
                         <li 
                             className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
                             onClick={handleDisconnect}
