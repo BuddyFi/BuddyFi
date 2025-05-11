@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { MessageChat } from "@/components/MessageChat";
 import { useWallet } from "@solana/wallet-adapter-react";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
@@ -17,7 +17,7 @@ interface Conversation {
   unread: boolean;
 }
 
-const Page = () => {
+const MessagesContent = () => {
   const { publicKey } = useWallet();
   const currentUserId = publicKey?.toString() || "current-user";
   const [activeConversation, setActiveConversation] = useState<string | null>(
@@ -179,8 +179,8 @@ const Page = () => {
                     ) : (
                       <div className="h-full flex items-center justify-center">
                         <div className="text-center p-6">
-                          <div className="mx-auto h-12 w-12 rounded-full bg-buddyfi-purple/20 flex items-center justify-center mb-4">
-                            <UserRound className="h-6 w-6 text-buddyfi-purple" />
+                          <div className="mx-auto h-12 w-12 rounded-full bg-purple-300/20 flex items-center justify-center mb-4">
+                            <UserRound className="h-6 w-6 text-purple-300" />
                           </div>
                           <h3 className="text-lg font-medium mb-2">
                             No conversation selected
@@ -199,6 +199,14 @@ const Page = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MessagesContent />
+    </Suspense>
   );
 };
 

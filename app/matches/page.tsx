@@ -90,7 +90,7 @@ const Page = () => {
               </div>
             ) : (
               <Tabs defaultValue="likes" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-8 bg-transparent">
+                <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-500/10">
                   <TabsTrigger
                     value="likes"
                     className="data-[state=active]:bg-purple-300/70 data-[state=active]:text-white"

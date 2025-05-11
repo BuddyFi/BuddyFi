@@ -109,9 +109,9 @@ export const MessageChat = ({ matchedUser, currentUserId }: MessageChatProps) =>
                 key={message.id} 
                 className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-[80%] ${isCurrentUser ? 'bg-buddyfi-purple rounded-tl-2xl rounded-tr-sm rounded-bl-2xl' : 'bg-gray-800 rounded-tr-2xl rounded-tl-sm rounded-br-2xl'} px-4 py-3`}>
+                <div className={`max-w-[80%] ${isCurrentUser ? 'bg-purple-300 rounded-tl-2xl rounded-tr-sm rounded-bl-2xl' : 'bg-gray-800 rounded-tr-2xl rounded-tl-sm rounded-br-2xl'} px-4 py-3`}>
                   <p className="text-sm">{message.content}</p>
-                  <span className={`text-xs mt-1 block ${isCurrentUser ? 'text-buddyfi-purple-light' : 'text-gray-400'}`}>
+                  <span className={`text-xs mt-1 block ${isCurrentUser ? 'text-purple-300-light' : 'text-gray-400'}`}>
                     {formatTime(message.timestamp)}
                   </span>
                 </div>

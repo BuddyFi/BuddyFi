@@ -277,7 +277,7 @@ const Page = () => {
             ) : isFinished ? (
               <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
                 <div className="mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-buddyfi-purple/20 text-buddyfi-purple mb-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-300/20 text-purple-300 mb-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-8 w-8"
@@ -409,7 +409,7 @@ const Page = () => {
               <h3 className="font-medium mb-4">How It Works</h3>
               <ul className="space-y-4 text-sm">
                 <li className="flex items-start">
-                  <div className="flex-shrink-0 h-5 w-5 mr-2 text-buddyfi-purple">
+                  <div className="flex-shrink-0 h-5 w-5 mr-2 text-purple-300">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
@@ -428,7 +428,7 @@ const Page = () => {
                   </span>
                 </li>
                 <li className="flex items-start">
-                  <div className="flex-shrink-0 h-5 w-5 mr-2 text-buddyfi-purple">
+                  <div className="flex-shrink-0 h-5 w-5 mr-2 text-purple-300">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
@@ -447,7 +447,7 @@ const Page = () => {
                   </span>
                 </li>
                 <li className="flex items-start">
-                  <div className="flex-shrink-0 h-5 w-5 mr-2 text-buddyfi-purple">
+                  <div className="flex-shrink-0 h-5 w-5 mr-2 text-purple-300">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"

@@ -187,8 +187,9 @@ export default function GithubContributions({ username, days = 30 }: GithubContr
             size: 12,
           },
           color: '#6b7280',
-          callback: function(value: number) {
-            return value % 1 === 0 ? value : '';
+          callback: function(tickValue: string | number) {
+            const numValue = Number(tickValue);
+            return numValue % 1 === 0 ? numValue : '';
           }
         }
       }
