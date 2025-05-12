@@ -81,9 +81,9 @@ export default function ProfilePage() {
     return (
       <div className="text-center py-10">
         <p className="mb-4">Connect your wallet to view your dev profile</p>
-        <button className="px-6 py-2 bg-indigo-600 rounded-full hover:bg-indigo-500 transition">
-          Connect Wallet
-        </button>
+        <div className="flex justify-center">
+        <ConnectWalletButton />
+        </div>
       </div>
     );
   }
