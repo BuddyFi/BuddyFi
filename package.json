@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",
+    "framer-motion": "^12.11.0",
     "gsap": "^3.12.7",
     "ipfs-http-client": "^60.0.1",
     "lucide-react": "^0.488.0",

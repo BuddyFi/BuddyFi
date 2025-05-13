@@ -3,17 +3,223 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import Navbar from "@/components/Navbar";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "@/components/Footer";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { CodeBlock } from "@/components/code-block";
+import { FeatureCard } from "@/components/feature-card";
+import { Code } from "lucide-react";
+import { DevIcon } from "@/components/dev-icon";
+import { RoadmapTimeline } from "@/components/roadmap-timeline";
+import { TestimonialCarousel } from "@/components/testimonial-carousel";
+
 // import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { publicKey } = useWallet();
+  const problemRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const howItWorksRef = useRef<HTMLDivElement>(null);
+  const roadmapRef = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+
+  const problemInView = useInView(problemRef, { once: true, amount: 0.2 });
+  const featuresInView = useInView(featuresRef, { once: true, amount: 0.2 });
+  const howItWorksInView = useInView(howItWorksRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const roadmapInView = useInView(roadmapRef, { once: true, amount: 0.2 });
+  const testimonialsInView = useInView(testimonialsRef, {
+    once: true,
+    amount: 0.2,
+  });
+
+  // Problem cards data
+  const problemCards = [
+    {
+      title: "Last-minute scrambling",
+      description:
+        "Frantically DMing strangers on Discord the night before submissions open.",
+      icon: "🏃‍♂️",
+    },
+    {
+      title: "Skill mismatches",
+      description:
+        '"I thought you knew Solidity?"\n"I thought YOU knew Solidity!"',
+      icon: "🤔",
+    },
+    {
+      title: "Trust issues",
+      description:
+        'Can you really trust someone who claims to be a "10x dev" with a Metamask PFP?',
+      icon: "🔍",
+    },
+    {
+      title: "Weekend warriors",
+      description:
+        '"I’m free for 2 hours Sunday night — unless my cat gets sick."',
+      icon: "📅",
+    },
+    {
+      title: "Hero syndrome",
+      description:
+        "One teammate tries to solo the project while everyone else turns into spectators.",
+      icon: "🦸‍♂️",
+    },
+    {
+      title: "Timezone black hole",
+      description:
+        "When your standup turns into a ghost town because it’s 4AM for half the team.",
+      icon: "🕳️",
+    },
+  ];
+  
+
+  // Features data
+  const features = [
+    {
+      title: "On-chain Profiles",
+      description:
+        "Your GitHub commits, StackOverflow answers, and previous hackathon projects are verified and stored on-chain, creating a trustless resume that speaks for itself.",
+      icon: <Code className="h-10 w-10" />,
+      color: "from-cyan-500 to-cyan-400",
+      codeSnippet: `// Verify developer profile
+const profile = await buddyfi.verify({
+  github: "username",
+  ethereum: "0x...",
+  skills: ["solidity", "react"]
+});`,
+    },
+    {
+      title: "Swipe to Match",
+      description:
+        "Our algorithm suggests potential teammates based on complementary skills, shared interests, and compatible working styles. Swipe right on developers you'd like to work with.",
+      icon: <DevIcon.SwipeIcon className="h-10 w-10" />,
+      color: "from-violet-500 to-violet-400",
+      codeSnippet: `// Match algorithm
+const matches = await buddyfi.findMatches({
+  skills: ["needed"],
+  interests: ["defi", "gaming"],
+  availability: "weekends"
+});`,
+    },
+    {
+      title: "Wallet Trust",
+      description:
+        "We analyze on-chain activity to establish a trust score. Developers with a history of completed projects and active participation are ranked higher in search results.",
+      icon: <DevIcon.WalletIcon className="h-10 w-10" />,
+      color: "from-cyan-500 to-violet-400",
+      codeSnippet: `// Calculate trust score
+const trustScore = await buddyfi.calculateTrust({
+  address: "0x...",
+  history: true,
+  contributions: true
+});`,
+    },
+    {
+      title: "Team Dashboard",
+      description:
+        "Once matched, teams get a shared workspace with integrated tools for planning, coding, and submitting projects. Track progress, assign tasks, and collaborate seamlessly.",
+      icon: <DevIcon.DashboardIcon className="h-10 w-10" />,
+      color: "from-violet-500 to-cyan-400",
+      codeSnippet: `// Create team workspace
+const workspace = await buddyfi.createTeam({
+  name: "EthWizards",
+  members: ["0x...", "0x..."],
+  hackathon: "ETHGlobal Paris"
+});`,
+    },
+  ];
+
+  // How it works steps
+  const steps = [
+    {
+      number: "01",
+      title: "Connect Wallet",
+      description:
+        "Link your wallet to create your BuddyFi profile. We'll analyze your on-chain activity to establish your developer identity.",
+      image: "/placeholder.svg?height=300&width=400&text=Connect+Wallet",
+      codeSnippet: `// Connect wallet
+  const account = await buddyfi.connect();
+  console.log("Connected:", account);`,
+    },
+    {
+      number: "02",
+      title: "Create Profile",
+      description:
+        "Add your skills, interests, and preferences. Link your GitHub, showcase past projects, and set your availability for upcoming hackathons.",
+      image: "/placeholder.svg?height=300&width=400&text=Create+Profile",
+      codeSnippet: `// Create profile
+  await buddyfi.createProfile({
+    name: "DevName",
+    skills: ["react", "solidity"],
+    github: "username",
+    availability: ["weekends", "evenings"]
+  });`,
+    },
+    {
+      number: "03",
+      title: "Swipe & Match",
+      description:
+        "Browse potential teammates, swipe right on those you'd like to work with, and start chatting when you match. Form your dream team and get hacking!",
+      image: "/placeholder.svg?height=300&width=400&text=Swipe+Match",
+      codeSnippet: `// Find and match with teammates
+  const potentialTeammates = await buddyfi.browse();
+  for (const dev of potentialTeammates) {
+    if (dev.skills.includes("needed-skill")) {
+      await buddyfi.swipeRight(dev.id);
+    }
+  }`,
+    },
+  ];
+
+  // Testimonials data
+  const testimonials = [
+    {
+      name: "Alex Chen",
+      role: "Solidity Developer",
+      image: "/placeholder.svg?height=100&width=100&text=AC",
+      quote:
+        "I was always the backend dev scrambling to find a frontend partner. Through BuddyFi, I matched with an amazing React developer and we won ETHDenver 2025!",
+    },
+    {
+      name: "Sophia Williams",
+      role: "Frontend Engineer",
+      image: "/placeholder.svg?height=100&width=100&text=SW",
+      quote:
+        "The wallet trust feature is a game-changer. I can see a developer's actual contributions before teaming up, not just what they claim on their resume.",
+    },
+    {
+      name: "Marcus Johnson",
+      role: "Smart Contract Auditor",
+      image: "/placeholder.svg?height=100&width=100&text=MJ",
+      quote:
+        "Found a team that perfectly complemented my security expertise with UI/UX talent. We've now worked on three hackathons together and launched a startup.",
+    },
+    {
+      name: "Priya Sharma",
+      role: "Full Stack Developer",
+      image: "/placeholder.svg?height=100&width=100&text=PS",
+      quote:
+        "As someone who's always struggled to find the right teammates, BuddyFi has been revolutionary. The skill-matching algorithm is surprisingly accurate!",
+    },
+    {
+      name: "David Kim",
+      role: "Blockchain Architect",
+      image: "/placeholder.svg?height=100&width=100&text=DK",
+      quote:
+        "The on-chain verification of skills is brilliant. No more exaggerated resumes or misleading profiles. What you see is what you get.",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* hero section */}
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="pt-20 pb-16 text-center">
           {/* <div className="inline-block mb-4">
             <span className="px-3 py-1 rounded-full bg-purple-300/10 text-purple-300 text-sm font-medium">
@@ -26,162 +232,253 @@ export default function Home() {
               Find the right builders for your project
             </span>
           </h1>
-          <p className="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="mt-6 text-xl text-gray-300 max-w-4xl mx-auto">
             BuddyFi matches developers with the perfect teammates for
             hackathons, using on-chain profiles, skill matching, and a familiar
             swipe-to-connect interface.
           </p>
-        </div>
-
-        {!publicKey ? (
-          <>
-            <div className="mt-10 max-w-lg mx-auto">
-              <div className="max-w-lg mx-auto text-center">
-                <div className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-lg rounded-xl p-8 shadow-2xl border border-gray-700">
-                  <h2 className="text-2xl font-bold mb-6">
-                    Connect Your Wallet
-                  </h2>
-                  <p className="mb-6 text-gray-300">
-                    Connect your Solana wallet to access the platform and find
-                    or become a builder.
-                  </p>
-                  <div className="flex justify-center">
-                    <ConnectWalletButton />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <section className="py-16 container px-4 mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-4">How BuddyFi Works</h2>
-                <p className="text-gray-300 max-w-2xl mx-auto">
-                  Connect your wallet, create your developer profile, and find
-                  your perfect hackathon teammate in minutes
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-8">
-                {[
-                  {
-                    icon: (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                        />
-                      </svg>
-                    ),
-                    title: "Connect Wallet",
-                    description:
-                      "Link your Solana wallet to secure your profile and enable on-chain interactions",
-                  },
-                  {
-                    icon: (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
-                    ),
-                    title: "Build Profile",
-                    description:
-                      "Showcase your skills, experience, timezone, and availability to attract the right teammates",
-                  },
-                  {
-                    icon: (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                        />
-                      </svg>
-                    ),
-                    title: "Match & Connect",
-                    description:
-                      "Swipe through potential teammates, match based on compatibility, and start collaborating",
-                  },
-                ].map((feature, index) => (
+          <div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              className="mt-10 flex items-center justify-center"
+            >
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4, 5].map((i) => (
                   <div
-                    key={index}
-                    className="backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-6 text-center"
+                    key={i}
+                    className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-slate-800"
                   >
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-300/10 text-purple-300 mb-5">
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                    <p className="text-gray-300">{feature.description}</p>
+                    <Image
+                      src={`/placeholder.svg?height=40&width=40&text=${i}`}
+                      alt={`User ${i}`}
+                      width={40}
+                      height={40}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                 ))}
               </div>
-            </section>
-          </>
-        ) : (
-          <div className="mt-10 max-w-2xl mx-auto">
-            <div className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-lg rounded-xl p-8 shadow-2xl border border-gray-700 text-center">
-              <h2 className="text-2xl font-bold mb-4">Welcome, Builder!</h2>
-              <p className="mb-8 text-gray-300">
-                Your wallet is connected. What would you like to do next?
+              <p className="ml-4 text-sm text-slate-400">
+                <span className="font-semibold text-cyan-400">100+</span>{" "}
+                developers matched this month
               </p>
+            </motion.div>
+          </div>
+        </div>
 
-              <div className="flex justify-center">
-                <Link
-                  href="/create"
-                  className="flex items-center justify-center p-4 border border-indigo-500 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-medium text-sm w-[50%]"
+        {/* Problem Section */}
+        <section ref={problemRef} className="px-4 py-24 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={problemInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="mb-12 text-center"
+            >
+              <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+                The <CodeBlock text="hackathon" highlight /> dilemma
+              </h2>
+              <p className="mt-4 text-xl text-slate-300">
+                We&apos;ve all been there. The excitement of a new hackathon,
+                followed by...
+              </p>
+            </motion.div>
+
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {problemCards.map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={problemInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="group rounded-lg border border-slate-800 bg-slate-900 p-6 shadow-lg shadow-cyan-500/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Create Your Decentralized Profile
-                </Link>
+                  <div className="mb-4 text-3xl">{item.icon}</div>
+                  <h3 className="mb-2 font-mono text-xl font-semibold text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-slate-400">{item.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
 
+        {/* Feature Cards Section */}
+        <section ref={featuresRef} className="px-4 py-24 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="mb-12 text-center"
+            >
+              
+              <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+                How BuddyFi <CodeBlock text="rewrites" highlight /> the story
+              </h2>
+              <p className="mt-4 text-xl text-slate-300">
+                We&apos;re bringing Web3 principles to hackathon team formation
+              </p>
+            </motion.div>
+
+            <div className="grid gap-8 md:grid-cols-2">
+              {features.map((feature, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                >
+                  <FeatureCard
+                    title={feature.title}
+                    description={feature.description}
+                    icon={feature.icon}
+                    color={feature.color}
+                    codeSnippet={feature.codeSnippet}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works Section */}
+        <section ref={howItWorksRef} className=" px-4 py-24 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={howItWorksInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="mb-12 text-center"
+            >
+              
+              <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+                <CodeBlock text="Three simple steps" />
+              </h2>
+              <p className="mt-4 text-xl text-slate-300">
+                From solo coder to dream team in minutes
+              </p>
+            </motion.div>
+
+            <div className="relative">
+              <div className="absolute left-1/2 top-0 h-full w-1 -translate-x-1/2 bg-gradient-to-b from-cyan-500/30 to-violet-500/30 md:block"></div>
+
+              <div className="grid gap-12">
+                {steps.map((step, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={howItWorksInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.6, delay: i * 0.2 }}
+                    className="relative grid items-center gap-8 md:grid-cols-2"
+                  >
+                    <div
+                      className={`order-2 ${
+                        i % 2 === 1 ? "md:order-1" : "md:order-2"
+                      }`}
+                    >
+                      <div className="group relative h-[300px] w-full overflow-hidden rounded-lg border-8 border-slate-800 bg-slate-900 shadow-xl shadow-cyan-500/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/10">
+                        <Image
+                          src={step.image || "/placeholder.svg"}
+                          alt={step.title}
+                          width={400}
+                          height={300}
+                          className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          <div className="w-full max-w-[80%] rounded-lg bg-slate-950/90 p-4">
+                            <pre className="overflow-x-auto font-mono text-xs text-cyan-400">
+                              <code>{step.codeSnippet}</code>
+                            </pre>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className={`order-1 ${
+                        i % 2 === 1 ? "md:order-2" : "md:order-1"
+                      }`}
+                    >
+                      <div className="relative">
+                        <div className="absolute left-1/2 top-0 flex h-12 w-12 -translate-x-1/2 -translate-y-14 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 text-white md:left-0 md:translate-x-0">
+                          <span className="font-mono font-bold">
+                            {step.number}
+                          </span>
+                        </div>
+                        <h3 className="mb-4 font-mono text-2xl font-bold text-white">
+                          {step.title}
+                        </h3>
+                        <p className="text-slate-300">{step.description}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>
-        )}
+        </section>
+
+        {/* Roadmap Timeline */}
+        <section ref={roadmapRef} className="px-4 py-24 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={roadmapInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="mb-12 text-center"
+            >
+            
+              <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+                The journey <CodeBlock text="ahead" highlight />
+              </h2>
+              <p className="mt-4 text-xl text-slate-300">
+                Our vision for the future of BuddyFi
+              </p>
+            </motion.div>
+
+            <RoadmapTimeline inView={roadmapInView} />
+          </div>
+        </section>
+
+        {/* Testimonials Carousel */}
+        <section ref={testimonialsRef} className="px-4 py-24 md:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="mb-12 text-center"
+            >
+             
+              <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+                <CodeBlock text="Success stories" />
+              </h2>
+              <p className="mt-4 text-xl text-slate-300">
+                Hear from developers who found their dream teams
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={testimonialsInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <TestimonialCarousel testimonials={testimonials} />
+            </motion.div>
+          </div>
+        </section>
+
+     
 
         <section className="py-16 container px-4 mx-auto">
           <div className="relative glass-morphism rounded-2xl overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-300/20 to-blue-300/10 z-0"></div>
             <div className="relative z-10 p-8 md:p-12 text-center">
               <h2 className="text-3xl font-bold mb-6">
-                Ready to find your hackathon dream team?
+              Ready to rewrite your hackathon story?
               </h2>
               <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
                 Join BuddyFi today and connect with talented developers who
@@ -193,26 +490,52 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="flex justify-center">
-                  <Link
-                    href="/discover"
-                    className="flex items-center justify-center px-4 py-2 border border-gray-500 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors text-white font-medium text-sm w-[20%]"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-2"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                    Browse Profiles
-                  </Link>
+                  <div className="flex gap-4">
+                    <div>
+                      <Link
+                        href="/create"
+                        className="flex items-center justify-center p-4 border border-indigo-500 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-medium text-sm"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                        Create Your Decentralized Profile
+                      </Link>
+                    </div>
+                    <div>
+                      <Link
+                        href="/discover"
+                        className="flex items-center justify-center p-4 border border-gray-500 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors text-white font-medium text-sm"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                          />
+                        </svg>
+                        Browse Profiles
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
