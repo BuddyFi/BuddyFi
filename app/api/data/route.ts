@@ -4,10 +4,21 @@
 const PINATA_API_KEY = process.env.PINATA_API_KEY!;
 const PINATA_API_SECRET = process.env.PINATA_SECRET_API_KEY!;
 
-export async function GET() {
+export async function GET(request: Request) {
   if (!PINATA_API_KEY || !PINATA_API_SECRET) {
     return new Response(
       JSON.stringify({ error: "Pinata API keys are missing" }),
+      { status: 400 }
+    );
+  }
+
+  // Get wallet address from query parameters
+  const { searchParams } = new URL(request.url);
+  const walletAddress = searchParams.get('walletAddress');
+
+  if (!walletAddress) {
+    return new Response(
+      JSON.stringify({ error: "Wallet address is required" }),
       { status: 400 }
     );
   }
@@ -30,34 +41,40 @@ export async function GET() {
     }
 
     const data = await response.json();
-    // console.log("received data from pinata", data);
+    const pins = data.rows || [];
 
-    const pin = data.rows?.[0];
+    // Step 2: Find the pin that matches the wallet address
+    let matchingPin = null;
+    let matchingProfile = null;
 
-    if (!pin) {
+    for (const pin of pins) {
+      const ipfsHash = pin.ipfs_pin_hash;
+      const ipfsResponse = await fetch(
+        `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
+      );
+      
+      if (ipfsResponse.ok) {
+        const profileData = await ipfsResponse.json();
+        if (profileData.walletAddress === walletAddress) {
+          matchingPin = pin;
+          matchingProfile = profileData;
+          break;
+        }
+      }
+    }
+
+    if (!matchingProfile) {
       return new Response(
-        JSON.stringify({ error: "No pin found for given hash" }),
+        JSON.stringify({ error: "No profile found for the given wallet address" }),
         { status: 404 }
       );
     }
 
-    const ipfsHash = pin.ipfs_pin_hash;
-
-    // Step 2: Fetch content from IPFS gateway
-    const ipfsResponse = await fetch(
-      `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
-    );
-    if (!ipfsResponse.ok) {
-      return new Response(
-        JSON.stringify({ error: "Failed to fetch data from IPFS gateway" }),
-        { status: ipfsResponse.status }
-      );
-    }
-
-    const ipfsData = await ipfsResponse.json();
-
-    // Return the actual IPFS content
-    return new Response(JSON.stringify({ pinInfo: pin, ipfsData }), {
+    // Return the matching profile data
+    return new Response(JSON.stringify({ 
+      pinInfo: matchingPin, 
+      profileData: matchingProfile 
+    }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

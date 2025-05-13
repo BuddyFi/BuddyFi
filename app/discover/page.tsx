@@ -59,16 +59,81 @@ const mockProfiles: UserProfile[] = [
   },
 ];
 
+// Add these interfaces before the Page component
+interface ApiUserData {
+  pinInfo: {
+    ipfs_pin_hash: string;
+  };
+  userData: {
+    name: string;
+    avatar?: string;
+    bannerImage?: string;
+    skills?: string[];
+    timezone?: string;
+    bio?: string;
+    social?: {
+      github?: string;
+    };
+    availability?: string;
+  };
+}
+
+interface ApiResponse {
+  users: ApiUserData[];
+}
+
 const Page = () => {
   const { publicKey } = useWallet();
-  const [profiles, setProfiles] = useState<UserProfile[]>(mockProfiles);
+  const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState<"left" | "right" | null>(null);
   const [showNotification, setShowNotification] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const startPosition = useRef({ x: 0, y: 0 });
+
+  // Fetch user profiles from API
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await fetch('/api/user');
+        if (!response.ok) {
+          throw new Error('Failed to fetch profiles');
+        }
+        const data = await response.json() as ApiResponse;
+        
+        // Transform API data to match UserProfile interface
+        const transformedProfiles: UserProfile[] = data.users.map((user) => ({
+          id: user.pinInfo.ipfs_pin_hash,
+          name: user.userData.name,
+          avatar: user.userData.avatar || '/avatar.avif',
+          bannerImage: user.userData.bannerImage,
+          skills: user.userData.skills || [],
+          timezone: user.userData.timezone || 'Not specified',
+          bio: user.userData.bio || '',
+          githubUsername: user.userData.social?.github,
+          availability: user.userData.availability || 'Not specified'
+        }));
+
+        setProfiles(transformedProfiles);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        // Fallback to mock data in case of error
+        setProfiles(mockProfiles);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (publicKey) {
+      fetchProfiles();
+    }
+  }, [publicKey]);
 
   const currentProfile = profiles[currentProfileIndex];
   const isFinished = currentProfileIndex >= profiles.length;
@@ -180,7 +245,6 @@ const Page = () => {
   }, [isDragging]);
 
   const resetProfiles = () => {
-    setProfiles(mockProfiles);
     setCurrentProfileIndex(0);
     setPosition({ x: 0, y: 0 });
     setIsAnimating(null);
@@ -272,6 +336,40 @@ const Page = () => {
                 </p>
                 <div className="flex justify-center">
                   <ConnectWalletButton />
+                </div>
+              </div>
+            ) : isLoading ? (
+              <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
+                <div className="flex flex-col items-center justify-center">
+                  <div className="w-12 h-12 border-4 border-purple-300 border-dashed rounded-full animate-spin mb-4" />
+                  <p className="text-gray-300">Loading profiles...</p>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
+                <div className="flex flex-col items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-12 w-12 text-red-500 mb-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                  <h2 className="text-xl font-bold mb-2">Error Loading Profiles</h2>
+                  <p className="text-gray-300 mb-4">{error}</p>
+                  <Button
+                    onClick={() => window.location.reload()}
+                    className="bg-purple-300 hover:bg-dark-purple-300"
+                  >
+                    Try Again
+                  </Button>
                 </div>
               </div>
             ) : isFinished ? (

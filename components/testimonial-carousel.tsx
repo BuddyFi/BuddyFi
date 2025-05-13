@@ -99,7 +99,7 @@ export function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) 
                   </div>
                   <Quote className="ml-auto h-8 w-8 text-cyan-500/30" />
                 </div>
-                <p className="text-lg italic text-slate-300">"{testimonial.quote}"</p>
+                <p className="text-lg italic text-slate-300">{testimonial.quote}</p>
               </div>
             </div>
           ))}

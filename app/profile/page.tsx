@@ -50,12 +50,17 @@ export default function ProfilePage() {
   const [editForm, setEditForm] = useState<ProfileData>({ ...profileData });
 
   useEffect(() => {
-    fetch("/api/data")
+    if (!publicKey) return;
+    
+    fetch(`/api/data?walletAddress=${publicKey.toString()}`)
       .then((res) => res.json())
-      .then(({ ipfsData }) => setData(ipfsData))
-      .catch(console.error)
+      .then(({ profileData }) => setData(profileData))
+      .catch((error) => {
+        console.error('Failed to fetch profile:', error);
+        toast.error('Failed to load profile');
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [publicKey]);
 
   useEffect(() => {
     if (cardRef.current) {

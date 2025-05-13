@@ -44,7 +44,7 @@ const Footer = () => {
             </a>
           </div>
           <p className="mt-8 md:mt-0 text-center md:text-left text-sm text-gray-400">
-            &copy; 2025 Builder Platform. All rights reserved.
+            &copy; 2025 BuddyFi. All rights reserved.
           </p>
         </div>
       </div>

@@ -75,7 +75,6 @@ export default function Home() {
       icon: "🕳️",
     },
   ];
-  
 
   // Features data
   const features = [
@@ -140,7 +139,7 @@ const workspace = await buddyfi.createTeam({
       title: "Connect Wallet",
       description:
         "Link your wallet to create your BuddyFi profile. We'll analyze your on-chain activity to establish your developer identity.",
-      image: "/placeholder.svg?height=300&width=400&text=Connect+Wallet",
+      image: "/connect_wallet.jpg",
       codeSnippet: `// Connect wallet
   const account = await buddyfi.connect();
   console.log("Connected:", account);`,
@@ -150,7 +149,7 @@ const workspace = await buddyfi.createTeam({
       title: "Create Profile",
       description:
         "Add your skills, interests, and preferences. Link your GitHub, showcase past projects, and set your availability for upcoming hackathons.",
-      image: "/placeholder.svg?height=300&width=400&text=Create+Profile",
+      image: "/create_profile.jpg",
       codeSnippet: `// Create profile
   await buddyfi.createProfile({
     name: "DevName",
@@ -164,7 +163,7 @@ const workspace = await buddyfi.createTeam({
       title: "Swipe & Match",
       description:
         "Browse potential teammates, swipe right on those you'd like to work with, and start chatting when you match. Form your dream team and get hacking!",
-      image: "/placeholder.svg?height=300&width=400&text=Swipe+Match",
+      image: "/matched.webp",
       codeSnippet: `// Find and match with teammates
   const potentialTeammates = await buddyfi.browse();
   for (const dev of potentialTeammates) {
@@ -178,18 +177,18 @@ const workspace = await buddyfi.createTeam({
   // Testimonials data
   const testimonials = [
     {
-      name: "Alex Chen",
-      role: "Solidity Developer",
+      name: "Pegasus'X",
+      role: "On-Chain SPEAKER",
       image: "/placeholder.svg?height=100&width=100&text=AC",
       quote:
-        "I was always the backend dev scrambling to find a frontend partner. Through BuddyFi, I matched with an amazing React developer and we won ETHDenver 2025!",
+        "Omg damn.. This is gonna be explosive 🔥🔥 Super Bullish on this King",
     },
     {
-      name: "Sophia Williams",
-      role: "Frontend Engineer",
+      name: "Sahil Meena",
+      role: "Blockchain Dev",
       image: "/placeholder.svg?height=100&width=100&text=SW",
       quote:
-        "The wallet trust feature is a game-changer. I can see a developer's actual contributions before teaming up, not just what they claim on their resume.",
+        "Guys if you're still looking out for a team for the Breakout Hackathon or just any other hackathon. THIS IS YOUR GO TO PLACE!!!",
     },
     {
       name: "Marcus Johnson",
@@ -220,7 +219,7 @@ const workspace = await buddyfi.createTeam({
 
       {/* hero section */}
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="pt-20 pb-16 text-center">
+        <div className="pt-30 pb-16 text-center">
           {/* <div className="inline-block mb-4">
             <span className="px-3 py-1 rounded-full bg-purple-300/10 text-purple-300 text-sm font-medium">
               ⚡ Now on Solana Mainnet
@@ -251,7 +250,7 @@ const workspace = await buddyfi.createTeam({
                     className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-slate-800"
                   >
                     <Image
-                      src={`/placeholder.svg?height=40&width=40&text=${i}`}
+                      src={`/placeholder${i}.jpeg`}
                       alt={`User ${i}`}
                       width={40}
                       height={40}
@@ -260,9 +259,9 @@ const workspace = await buddyfi.createTeam({
                   </div>
                 ))}
               </div>
-              <p className="ml-4 text-sm text-slate-400">
-                <span className="font-semibold text-cyan-400">100+</span>{" "}
-                developers matched this month
+              <p className="ml-4 text-sm text-slate-400">Trusted by {" "}
+                <span className="font-semibold text-cyan-400">100+</span> active
+                Solana developers this month — and growing.
               </p>
             </motion.div>
           </div>
@@ -315,7 +314,6 @@ const workspace = await buddyfi.createTeam({
               transition={{ duration: 0.6 }}
               className="mb-12 text-center"
             >
-              
               <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
                 How BuddyFi <CodeBlock text="rewrites" highlight /> the story
               </h2>
@@ -354,7 +352,6 @@ const workspace = await buddyfi.createTeam({
               transition={{ duration: 0.6 }}
               className="mb-12 text-center"
             >
-              
               <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
                 <CodeBlock text="Three simple steps" />
               </h2>
@@ -380,13 +377,13 @@ const workspace = await buddyfi.createTeam({
                         i % 2 === 1 ? "md:order-1" : "md:order-2"
                       }`}
                     >
-                      <div className="group relative h-[300px] w-full overflow-hidden rounded-lg border-8 border-slate-800 bg-slate-900 shadow-xl shadow-cyan-500/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/10">
+                      <div className="group relative h-[500px] w-full overflow-hidden rounded-lg border-8 border-slate-800 bg-slate-900 shadow-xl shadow-cyan-500/5 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/10">
                         <Image
                           src={step.image || "/placeholder.svg"}
                           alt={step.title}
                           width={400}
-                          height={300}
-                          className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
+                          height={500}
+                          className="w-full transition-all duration-500 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                           <div className="w-full max-w-[80%] rounded-lg bg-slate-950/90 p-4">
@@ -430,7 +427,6 @@ const workspace = await buddyfi.createTeam({
               transition={{ duration: 0.6 }}
               className="mb-12 text-center"
             >
-            
               <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
                 The journey <CodeBlock text="ahead" highlight />
               </h2>
@@ -452,7 +448,6 @@ const workspace = await buddyfi.createTeam({
               transition={{ duration: 0.6 }}
               className="mb-12 text-center"
             >
-             
               <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
                 <CodeBlock text="Success stories" />
               </h2>
@@ -471,14 +466,12 @@ const workspace = await buddyfi.createTeam({
           </div>
         </section>
 
-     
-
         <section className="py-16 container px-4 mx-auto">
           <div className="relative glass-morphism rounded-2xl overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-300/20 to-blue-300/10 z-0"></div>
             <div className="relative z-10 p-8 md:p-12 text-center">
               <h2 className="text-3xl font-bold mb-6">
-              Ready to rewrite your hackathon story?
+                Ready to rewrite your hackathon story?
               </h2>
               <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
                 Join BuddyFi today and connect with talented developers who

@@ -43,12 +43,26 @@ export default function AdminBuddyPage() {
   const [showUserDetails, setShowUserDetails] = useState(false);
 
   useEffect(() => {
-    fetch("/api/adminbuddy")
-      .then((res) => res.json())
-      .then(({ users }) => setUsers(users || []))
-      .catch(console.error)
+    if (!publicKey) return;
+
+    fetch(`/api/adminbuddy?walletAddress=${publicKey.toString()}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Failed to fetch users');
+        }
+        return res.json();
+      })
+      .then(({ users }) => {
+        console.log('Fetched users:', users); // Debug log
+        setUsers(users || []);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch users:', error);
+        setUsers([]);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [publicKey]);
 
   useEffect(() => {
     if (cardRef.current) {

@@ -42,7 +42,7 @@ export const UserCard = ({
   const handleAction = () => {
     if (user.isMatched) {
       // Navigate to messages page with this user selected
-      router.push(`/messages`);
+      router.push(`/team_dashboard`);
     } else if (onConnect) {
       onConnect(user.id);
     }
