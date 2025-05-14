@@ -71,7 +71,7 @@ export function RoadmapTimeline({ inView }: RoadmapTimelineProps) {
             onMouseLeave={() => setActiveIndex(null)}
             onClick={() => setActiveIndex(activeIndex === i ? null : i)}
           >
-            <div className="absolute left-1/2 top-0 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-slate-900 text-center shadow-lg shadow-cyan-500/10">
+            <div className="absolute left-1/2 top-6 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-slate-900 text-center shadow-lg shadow-cyan-500/10">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 text-white">
                 {milestone.icon}
               </div>
