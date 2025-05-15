@@ -60,7 +60,7 @@ export default function Home() {
     {
       title: "Skill mismatches",
       description:
-        '"I thought you knew Solidity?"\n"I thought YOU knew Solidity!"',
+        "I thought you knew Solidity? | I thought YOU knew Solidity!",
       icon: "🤔",
     },
     {
@@ -72,7 +72,7 @@ export default function Home() {
     {
       title: "Weekend warriors",
       description:
-        '"I’m free for 2 hours Sunday night — unless my cat gets sick."',
+        "I’m free for 2 hours Sunday night — unless my cat gets sick.",
       icon: "📅",
     },
     {

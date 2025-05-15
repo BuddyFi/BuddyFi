@@ -132,7 +132,7 @@ export default function ProfileForm({ onSubmit, isSubmitting = false }: ProfileF
         
         <div>
           <label htmlFor="twitter" className="block text-sm font-medium mb-1">
-            Twitter
+            Twitter/X
           </label>
           <input
             type="text"
@@ -140,7 +140,7 @@ export default function ProfileForm({ onSubmit, isSubmitting = false }: ProfileF
             name="social.twitter"
             value={formData.social.twitter}
             onChange={handleChange}
-            placeholder="@username"
+            placeholder="Enter your twitter/X username"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -155,7 +155,7 @@ export default function ProfileForm({ onSubmit, isSubmitting = false }: ProfileF
             name="social.github"
             value={formData.social.github}
             onChange={handleChange}
-            placeholder="username"
+            placeholder="Enter your github username"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -170,7 +170,7 @@ export default function ProfileForm({ onSubmit, isSubmitting = false }: ProfileF
             name="social.linkedin"
             value={formData.social.linkedin}
             onChange={handleChange}
-            placeholder="username"
+            placeholder="Enter your linkedin username"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
