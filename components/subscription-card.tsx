@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useWallet, useConnection } from "@solana/wallet-adapter-react"
 import { sendPayment } from "@/lib/solana"
 import { useToast } from "../hooks/use-toast"
+import { useSubscription } from "@/context/subscription-context"
+import { useRouter } from "next/navigation"
 
 interface SubscriptionProps {
   subscription: {
@@ -27,6 +29,8 @@ export function SubscriptionCard({ subscription }: SubscriptionProps) {
   const walletContext = useWallet()
   const { connection } = useConnection()
   const { toast } = useToast()
+  const { setSubscription, calculateExpiryDate } = useSubscription()
+  const router = useRouter()
 
   const handlePayment = async () => {
     if (!walletContext.connected || !walletContext.publicKey) {
@@ -47,11 +51,28 @@ export function SubscriptionCard({ subscription }: SubscriptionProps) {
       setSignature(txSignature)
       setStatus("success")
 
+      // Create subscription after successful payment
+      const startDate = Date.now()
+      const expiryDate = calculateExpiryDate(subscription.id, startDate)
+      
+      setSubscription({
+        planId: subscription.id,
+        planName: subscription.title,
+        startDate,
+        expiryDate,
+        walletAddress: walletContext.publicKey.toBase58(),
+      })
+
       toast({
         title: "Payment successful!",
         description: `You have successfully subscribed to the ${subscription.title} plan.`,
         variant: "default",
       })
+
+      // Redirect to subscription dashboard after a short delay
+      setTimeout(() => {
+        router.push("/dashboard/subscription")
+      }, 2000)
     } catch (error) {
       console.error("Payment failed:", error)
       setStatus("error")

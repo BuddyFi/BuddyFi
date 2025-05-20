@@ -43,6 +43,8 @@ export const sendPayment = async (
     transaction.recentBlockhash = blockhash
     transaction.feePayer = wallet.publicKey
 
+    
+
     // Sign and send the transaction
     const signature = await wallet.sendTransaction(transaction, connection)
 

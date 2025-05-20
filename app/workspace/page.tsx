@@ -33,6 +33,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Icons
 import {
@@ -158,8 +161,14 @@ const TeamDashboard = () => {
   const [messages, setMessages] = useState(mockMessages);
   const [teamMembers, setTeamMembers] = useState(initialTeamMembers);
   const [isLoading, setIsLoading] = useState(false);
-  // Trial expired state
   const [isTrialExpired, setIsTrialExpired] = useState(false);
+  const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
+  const [newTask, setNewTask] = useState({
+    title: "",
+    assignedTo: "",
+    status: "To Do",
+    dueDate: "",
+  });
   
   // Configure trial days
   const TRIAL_DAYS = 15;
@@ -288,9 +297,34 @@ const TeamDashboard = () => {
     }
   };
 
+  const handleAddTask = () => {
+    if (newTask.title && newTask.assignedTo && newTask.dueDate) {
+      const task = {
+        id: `task-${tasks.length + 1}`,
+        ...newTask,
+        dueDate: new Date(newTask.dueDate).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      };
+      setTasks([...tasks, task]);
+      setNewTask({
+        title: "",
+        assignedTo: "",
+        status: "To Do",
+        dueDate: "",
+      });
+      setIsAddTaskModalOpen(false);
+    }
+  };
+
   // Rendering helpers
   const getTeamMemberById = (id: string) =>
     teamMembers.find((member) => member.id === id);
+
+  // Add current user ID constant
+  const CURRENT_USER_ID = "current";
 
   if (!publicKey) {
     return (
@@ -316,8 +350,6 @@ const TeamDashboard = () => {
       </div>
     );
   }
-
-
 
   return (
     <div>
@@ -568,6 +600,7 @@ const TeamDashboard = () => {
                     <Button
                       size="sm"
                       className="bg-purple-600 hover:bg-purple-700 cursor-pointer"
+                      onClick={() => setIsAddTaskModalOpen(true)}
                     >
                       <Plus className="h-4 w-4 mr-1" />
                       Add Task
@@ -662,7 +695,7 @@ const TeamDashboard = () => {
                     <TabsContent value="mine" className="m-0">
                       <div className="divide-y divide-white/5">
                         {tasks
-                          .filter((task) => task.assignedTo === "4")
+                          .filter((task) => task.assignedTo === CURRENT_USER_ID)
                           .map((task) => {
                             const assignee = getTeamMemberById(task.assignedTo);
                             return (
@@ -725,7 +758,7 @@ const TeamDashboard = () => {
                               </div>
                             );
                           })}
-                        {tasks.filter((task) => task.assignedTo === "4")
+                        {tasks.filter((task) => task.assignedTo === CURRENT_USER_ID)
                           .length === 0 && (
                           <div className="p-8 text-center text-gray-400">
                             <ClipboardList className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -891,6 +924,87 @@ const TeamDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Task Modal */}
+      <Dialog open={isAddTaskModalOpen} onOpenChange={setIsAddTaskModalOpen}>
+        <DialogContent className="bg-black/90 border border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Add New Task</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Task Title</Label>
+              <Input
+                id="title"
+                value={newTask.title}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                className="bg-white/5 border-white/10"
+                placeholder="Enter task title"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="assignedTo">Assign To</Label>
+              <Select
+                value={newTask.assignedTo}
+                onValueChange={(value) => setNewTask({ ...newTask, assignedTo: value })}
+              >
+                <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectValue placeholder="Select team member" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/90 border border-white/10">
+                  {teamMembers.map((member) => (
+                    <SelectItem key={member.id} value={member.id}>
+                      {member.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={newTask.status}
+                onValueChange={(value) => setNewTask({ ...newTask, status: value })}
+              >
+                <SelectTrigger className="bg-white/5 border-white/10">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/90 border border-white/10">
+                  <SelectItem value="To Do">To Do</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Review">Review</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="dueDate">Due Date</Label>
+              <Input
+                id="dueDate"
+                type="date"
+                value={newTask.dueDate}
+                onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                className="bg-white/5 border-white/10"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsAddTaskModalOpen(false)}
+              className="border-white/10 hover:bg-white/10"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddTask}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              Add Task
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
