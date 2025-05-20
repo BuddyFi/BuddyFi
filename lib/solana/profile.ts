@@ -51,7 +51,7 @@ export const initializeProfile = async (
     connection: Connection,
     options?: any
   ) => Promise<string>,
-  ipfsCid: string = "QmZfixVHJnYYAwfcaqZGgJCfmWGr39p8VLBsgnfYnoZUuf",
+  arweaveCid: string = "QmZfixVHJnYYAwfcaqZGgJCfmWGr39p8VLBsgnfYnoZUuf",
   skills: string[] = ["nextjs", "solana"]
 ): Promise<string> => {
   // Derive the profile PDA
@@ -67,7 +67,7 @@ export const initializeProfile = async (
   // );
   // console.log("For wallet:", publicKey.toBase58());
   // console.log("Using program ID:", PROGRAM_ID.toBase58());
-  // console.log("IPFS CID:", ipfsCid);
+  // console.log("IPFS CID:", arweaveCid);
   // console.log("Skills:", skills);
 
   // console.log("Derived profile address:", profilePubkey.toString());
@@ -96,7 +96,7 @@ export const initializeProfile = async (
     wallet: publicKey,
     skills: skills, // Use skills from form
     verified: false,
-    ipfs_cid: ipfsCid, // Use CID from IPFS upload
+    ipfs_cid: arweaveCid, // Use CID from IPFS upload
     hackathon_participations: 0,
   });
 

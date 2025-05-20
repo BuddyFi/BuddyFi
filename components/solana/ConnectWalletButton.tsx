@@ -44,7 +44,7 @@ export default function ConnectWalletButton() {
         setShowDropdown(false);
     };
     const handleViewMessages = () => {
-        router.push("/team_dashboard")
+        router.push("/workspace")
         setShowDropdown(false);
     };
 
