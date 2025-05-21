@@ -2,9 +2,15 @@
 "use client"
 
 import { useWallet } from "@solana/wallet-adapter-react"
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
+import dynamic from 'next/dynamic'
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react"
+
+// Dynamically import WalletMultiButton with no SSR
+const WalletMultiButton = dynamic(
+    async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
+    { ssr: false }
+)
 
 function shortenAddress(address: string, chars = 4): string {
     if(!address) return "";
@@ -14,9 +20,15 @@ function shortenAddress(address: string, chars = 4): string {
 export default function ConnectWalletButton() {
     const { connected, publicKey, wallet, disconnect } = useWallet();
     const [showDropdown, setShowDropdown] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     
+    // Handle mounting state
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     // Close dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -52,6 +64,11 @@ export default function ConnectWalletButton() {
         disconnect();
         setShowDropdown(false);
     };
+    
+    // Don't render anything until mounted
+    if (!mounted) {
+        return null;
+    }
     
     // If not connected, keep the original WalletMultiButton
     if (!connected) {
