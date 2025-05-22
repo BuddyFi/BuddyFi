@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { CodeBlock } from "@/components/code-block";
 import { FeatureCard } from "@/components/feature-card";
 import { Code } from "lucide-react";
@@ -34,20 +34,40 @@ export default function Home() {
   const howItWorksRef = useRef<HTMLDivElement>(null);
   const roadmapRef = useRef<HTMLDivElement>(null);
   const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const problemInView = useInView(problemRef, { once: true, amount: 0.2 });
   const featuresInView = useInView(featuresRef, { once: true, amount: 0.2 });
-  const howItWorksInView = useInView(howItWorksRef, {
-    once: true,
-    amount: 0.2,
-  });
+  const howItWorksInView = useInView(howItWorksRef, { once: true, amount: 0.2 });
   const roadmapInView = useInView(roadmapRef, { once: true, amount: 0.2 });
-  const testimonialsInView = useInView(testimonialsRef, {
-    once: true,
-    amount: 0.2,
-  });
-  const [isFirstTime, setIsFirstTime] = useState(true);
+  const testimonialsInView = useInView(testimonialsRef, { once: true, amount: 0.2 });
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!publicKey) return;
+      
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/data?walletAddress=${publicKey.toString()}`);
+        if (response.ok) {
+          const data = await response.json();
+          // If we have profile data, user is not first time
+          setIsFirstTime(false);
+        } else {
+          // If no profile found, user is first time
+          setIsFirstTime(true);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        setIsFirstTime(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [publicKey]);
 
   // Problem cards data
   const problemCards = [
@@ -72,7 +92,7 @@ export default function Home() {
     {
       title: "Weekend warriors",
       description:
-        "I’m free for 2 hours Sunday night — unless my cat gets sick.",
+        "I'm free for 2 hours Sunday night — unless my cat gets sick.",
       icon: "📅",
     },
     {
@@ -84,7 +104,7 @@ export default function Home() {
     {
       title: "Timezone black hole",
       description:
-        "When your standup turns into a ghost town because it’s 4AM for half the team.",
+        "When your standup turns into a ghost town because it's 4AM for half the team.",
       icon: "🕳️",
     },
   ];
@@ -493,10 +513,19 @@ const workspace = await buddyfi.createTeam({
         ) : (
           <div className="flex justify-center">
             {/* First-time user profile completion */}
-            {isFirstTime && (
+            {isLoading ? (
               <Card className="mb-6 border-primary/20 bg-primary/5">
                 <CardHeader>
-                  <CardTitle>Complete Your Profile</CardTitle>
+                  <CardTitle>Loading Profile...</CardTitle>
+                  <CardDescription>
+                    Please wait while we fetch your profile information
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            ) : isFirstTime && (
+              <Card className="mb-6 border-primary/20 bg-primary/5">
+                <CardHeader>
+                  <CardTitle>Manage Your Profile</CardTitle>
                   <CardDescription>
                     Set up your profile to start connecting with other Web3
                     enthusiasts
@@ -522,7 +551,7 @@ const workspace = await buddyfi.createTeam({
                           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                         />
                       </svg>
-                      Complete Profile
+                      Manage Profile
                     </Link>
                   </div>
                 </CardContent>
@@ -551,7 +580,7 @@ const workspace = await buddyfi.createTeam({
                   <div className="flex md:flex-row flex-col gap-4">
                     <div>
                       <Link
-                        href="/create"
+                        href={isFirstTime ? "/create" : "/profile"}
                         className="flex items-center justify-center p-4 border border-indigo-500 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-medium text-sm"
                       >
                         <svg
@@ -568,7 +597,7 @@ const workspace = await buddyfi.createTeam({
                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                           />
                         </svg>
-                        Create Your Decentralized Profile
+                        {isFirstTime ? "Create Your Decentralized Profile" : "Manage Profile"}
                       </Link>
                     </div>
                     <div>

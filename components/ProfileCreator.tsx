@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import { useState } from "react";
-import { createBundlr } from "@/utils/bundlr";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { initializeProfile } from "@/lib/solana/profile";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
@@ -17,7 +15,7 @@ export default function ProfileCreator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [txId, setTxId] = useState("");
-  const [arweaveCid, setArweaveCid] = useState("");
+  const [ipfsCid, setIpfsCid] = useState("");
 
   const handleProfileSubmit = async (formData: any) => {
     if (!publicKey || !wallet?.adapter) {
@@ -29,44 +27,40 @@ export default function ProfileCreator() {
       setLoading(true);
       setError("");
 
-      // 👇 Upload to Arweave via Bundlr
-      const bundlr = await createBundlr(wallet?.adapter);
-      const profileData = {
-        ...formData,
-        walletAddress: publicKey.toString(),
-        timestamp: Date.now(),
-      };
-
-      const tx = await bundlr.upload(JSON.stringify(profileData), {
-        tags: [
-          { name: "Content-Type", value: "application/json" },
-           { name: "App", value: "BuddyFi" },
-            { name: "Type", value: "UserProfile" },
-          { name: "walletAddress", value: publicKey.toString() }, // Important for querying later
-        ],
+      const res = await fetch("/api/ipfs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          walletAddress: publicKey.toBase58(),
+        }),
       });
 
-      const arweaveUrl = `https://arweave.net/${tx.id}`;
-      console.log("arweave url:", arweaveUrl);
-      setCID(tx.id); // or arweaveUrl depending on how your smart contract stores it
-      setArweaveCid(tx.id); // can rename to setArweaveId if needed
+      const { cid, error } = await res.json();
+      if (error) throw new Error(error);
+
+      setCID(cid);
+      setIpfsCid(cid);
 
       const txSignature = await initializeProfile(
         connection,
         publicKey,
         sendTransaction,
-        tx.id, // replace cid with Arweave tx id
+        cid,
         formData.skills || ["nextjs", "solana"]
       );
 
       setTxId(txSignature);
     } catch (err) {
       console.error("Profile creation error:", err);
-      setError(err instanceof Error ? err.message : "Profile creation failed");
+      setError(
+        err instanceof Error ? err.message : "Profile creation failed"
+      );
     } finally {
       setLoading(false);
     }
   };
+
   if (!publicKey) {
     return (
       <div className="max-w-md mx-auto mt-20 p-6 bg-gradient-to-tr from-gray-900 to-gray-800 rounded-lg shadow-lg text-white text-center">
@@ -113,15 +107,10 @@ export default function ProfileCreator() {
             </a>
           </div>
           <div className="mb-3">
-            <div className="font-semibold text-gray-200">Arweave URL:</div>
-            <a
-              href={`https://arweave.net/${arweaveCid}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-400 underline break-words"
-            >
-              {arweaveCid}
-            </a>
+            <div className="font-semibold text-gray-200">IPFS CID:</div>
+            <span className="font-mono text-sm break-words text-gray-300">
+              {ipfsCid}
+            </span>
           </div>
 
           <Link
@@ -137,7 +126,10 @@ export default function ProfileCreator() {
             Your profile will be pinned to IPFS and linked on-chain with your
             wallet. Let&apos;s make it awesome!
           </p>
-          <ProfileForm onSubmit={handleProfileSubmit} isSubmitting={loading} />
+          <ProfileForm
+            onSubmit={handleProfileSubmit}
+            isSubmitting={loading}
+          />
         </>
       )}
 

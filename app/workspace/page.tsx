@@ -56,6 +56,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import NodeCache from 'node-cache';
 
 // Mock data - will be replaced with real data from API
 const initialTeamMembers = [
@@ -173,14 +174,7 @@ const TeamDashboard = () => {
   // Configure trial days
   const TRIAL_DAYS = 15;
   
-  // Show trial expired notification after delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsTrialExpired(true);
-    }, 5000); // 5 seconds delay
 
-    return () => clearTimeout(timer);
-  }, []); // Empty dependency array means this runs once when component mounts
 
   // Handle upgrade button click
   const handleUpgrade = () => {
@@ -196,16 +190,12 @@ const TeamDashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       if (!publicKey) return;
-
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `/api/workspace?walletAddress=${publicKey.toString()}`
-        );
+        const response = await fetch(`/api/workspace?walletAddress=${publicKey.toString()}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch users");
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
 
         if (data.users && data.users.length > 0) {
@@ -218,6 +208,7 @@ const TeamDashboard = () => {
                   role: any;
                   profileImage: any;
                   walletAddress: string;
+                  skills?: string[];
                 };
               },
               index: number
@@ -234,6 +225,7 @@ const TeamDashboard = () => {
                     user.userData.walletAddress.length - 4
                   )}`
                 : "Unknown",
+              skills: Array.isArray(user.userData.skills) ? user.userData.skills : [],
             })
           );
 
@@ -249,20 +241,20 @@ const TeamDashboard = () => {
                 ? `${publicKey.toString().substring(0, 4)}...${publicKey
                     .toString()
                     .substring(publicKey.toString().length - 4)}`
-                : "Current User",
+                : "Unknown",
+              skills: [],
             },
           ];
 
           setTeamMembers(updatedMembers);
         }
       } catch (error) {
-        console.error("Error fetching users:", error);
-        // Fallback to mock data if fetch fails
+        console.error('Error fetching users:', error);
+        // Add proper error state handling
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchUsers();
   }, [publicKey]);
 
@@ -326,6 +318,8 @@ const TeamDashboard = () => {
   // Add current user ID constant
   const CURRENT_USER_ID = "current";
 
+  const cache = new NodeCache({ stdTTL: 300 }); // 5 minutes cache
+
   if (!publicKey) {
     return (
       <div>
@@ -385,7 +379,7 @@ const TeamDashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
               <div>
                 <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
-                  Team Dashboard
+                  Team Workspace
                 </h1>
                 <p className="text-gray-400">
                   Collaborate with your team on Project X

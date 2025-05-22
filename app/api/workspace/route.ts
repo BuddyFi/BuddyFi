@@ -5,6 +5,37 @@ const PINATA_API_KEY = process.env.PINATA_API_KEY!;
 const PINATA_API_SECRET = process.env.PINATA_SECRET_API_KEY!;
 const ADMIN_WALLET_ADDRESS = process.env.ADMIN_WALLET_ADDRESS!;
 
+// Helper function to recursively convert Sets to Arrays and ensure serializable data
+function sanitizeDataForSerialization(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  
+  if (obj instanceof Set) {
+    return Array.from(obj);
+  }
+  
+  if (obj instanceof Map) {
+    return Object.fromEntries(obj);
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeDataForSerialization(item));
+  }
+  
+  if (typeof obj === 'object' && obj.constructor === Object) {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      sanitized[key] = sanitizeDataForSerialization(value);
+    }
+    return sanitized;
+  }
+  
+  // For primitive types and functions, return as-is
+  // Functions will be stripped out during JSON serialization anyway
+  return obj;
+}
+
 export async function GET(request: Request) {
   // Get wallet address from query parameters
   const { searchParams } = new URL(request.url);
@@ -80,9 +111,13 @@ export async function GET(request: Request) {
           }
           
           const userData = await ipfsResponse.json();
+          
+          // Thoroughly sanitize the entire userData object to ensure all Sets/Maps are converted
+          const sanitizedUserData = sanitizeDataForSerialization(userData);
+          
           return {
-            pinInfo: pin,
-            userData
+            pinInfo: sanitizeDataForSerialization(pin),
+            userData: sanitizedUserData
           };
         } catch (error) {
           console.error('IPFS fetch error:', { hash: ipfsHash, error });
@@ -103,6 +138,9 @@ export async function GET(request: Request) {
       const walletAddress = current.userData.walletAddress;
       if (!walletAddress) return acc;
 
+      // Skip if the wallet address matches the requesting user's wallet
+      if (walletAddress === searchParams.get('walletAddress')) return acc;
+
       // If this wallet hasn't been seen before, or if this profile is more recent
       if (!acc[walletAddress] || 
           new Date(current.pinInfo.date_pinned) > new Date(acc[walletAddress].pinInfo.date_pinned)) {
@@ -119,7 +157,7 @@ export async function GET(request: Request) {
       new Date(b.pinInfo.date_pinned).getTime() - new Date(a.pinInfo.date_pinned).getTime()
     );
 
-    // Get only the 4 most recent users
+    // Get only the 3 most recent users
     const recentUsers = uniqueLatestProfiles.slice(0, 3);
 
     // console.log('Filtered profiles:', {
@@ -128,8 +166,11 @@ export async function GET(request: Request) {
     //   returning: recentUsers.length
     // });
 
+    // Final sanitization before returning to ensure everything is serializable
+    const sanitizedResponse = sanitizeDataForSerialization({ users: recentUsers });
+
     // Return recent users
-    return new Response(JSON.stringify({ users: recentUsers }), {
+    return new Response(JSON.stringify(sanitizedResponse), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

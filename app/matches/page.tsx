@@ -158,7 +158,7 @@ const Page = () => {
             value="likes"
             className="data-[state=active]:bg-purple-300/70 data-[state=active]:text-white"
           >
-            Likes ({likedByProfiles.length})
+            Builder profiles ({likedByProfiles.length})
           </TabsTrigger>
           <TabsTrigger
             value="matches"
