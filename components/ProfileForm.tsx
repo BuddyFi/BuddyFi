@@ -160,20 +160,6 @@ export default function ProfileForm({ onSubmit, isSubmitting = false }: ProfileF
           />
         </div>
         
-        <div>
-          <label htmlFor="linkedin" className="block text-sm font-medium mb-1">
-            LinkedIn
-          </label>
-          <input
-            type="text"
-            id="linkedin"
-            name="social.linkedin"
-            value={formData.social.linkedin}
-            onChange={handleChange}
-            placeholder="Enter your linkedin username"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
       </div>
 
       <button

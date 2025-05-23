@@ -47,10 +47,10 @@ export default function ConnectWalletButton() {
         router.push("/profile")
         setShowDropdown(false);
     };
-    const handleBrowseProfile = () => {
-        router.push("/discover")
-        setShowDropdown(false);
-    };
+    // const handleBrowseProfile = () => {
+    //     router.push("/discover")
+    //     setShowDropdown(false);
+    // };
     const handleViewMatches = () => {
         router.push("/matches")
         setShowDropdown(false);
@@ -101,25 +101,20 @@ export default function ConnectWalletButton() {
                             className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
                             onClick={handleViewProfile}
                         >
-                            View Profile
+                            My Profile
                         </li>
+                        
                         <li 
                             className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
-                            onClick={handleBrowseProfile}
+                            onClick={handleViewMatches}
                         >
                             Browse Profiles
                         </li>
                         <li 
                             className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
-                            onClick={handleViewMatches}
-                        >
-                            View Matches
-                        </li>
-                        <li 
-                            className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
                             onClick={handleViewMessages}
                         >
-                            View Team Dashboard
+                            View Workspace
                         </li>
                         
                         <li 
