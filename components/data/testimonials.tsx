@@ -8,23 +8,23 @@ const testimonials = [
   {
     name: "Pegasus'X",
     role: "On-Chain SPEAKER",
-    image: "/placeholder.svg?height=100&width=100&text=AC",
+    image: "/avatar.avif",
     quote:
       "Omg damn.. This is gonna be explosive 🔥🔥 Super Bullish on this King",
   },
   {
     name: "Sahil Meena",
     role: "Blockchain Dev",
-    image: "/placeholder.svg?height=100&width=100&text=SW",
+    image: "/avatar.avif",
     quote:
       "Guys if you're still looking out for a team for the Breakout Hackathon or just any other hackathon. THIS IS YOUR GO TO PLACE!!!",
   },
   {
-    name: "Marcus Johnson",
-    role: "Smart Contract Auditor",
-    image: "/placeholder.svg?height=100&width=100&text=MJ",
+    name: "YEMI CRYPTO",
+    role: "DeFi &  Blockchain Researcher",
+    image: "/avatar.avif",
     quote:
-      "Found a team that perfectly complemented my security expertise with UI/UX talent. We've now worked on three hackathons together and launched a startup.",
+      "Dev flex just went up a level.Real-time charts, synced profiles, GitHub API magic, BuddyFi is slowly becoming the place for builders. Let your code speak.",
   },
   {
     name: "Priya Sharma",

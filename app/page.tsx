@@ -63,11 +63,11 @@ export default function Home() {
         <section className="py-16 container px-4 mx-auto">
           <div className="relative glass-morphism rounded-xl overflow-hidden">
             <div className="absolute inset-0 backdrop-blur-xl bg-gradient-to-r from-purple-300/20 to-blue-300/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.3)] z-0"></div>
-            <div className="relative z-10 p-8 md:p-12 text-center">
-              <h2 className="text-3xl font-bold mb-6">
+            <div className="relative z-10 p-6 md:p-12 text-center">
+              <h2 className="md:text-3xl text-2xl font-bold mb-6">
                 Ready to rewrite your hackathon story?
               </h2>
-              <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
+              <p className="md:text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
                 Join BuddyFi today and connect with talented developers who
                 share your vision and complement your skills.
               </p>

@@ -79,7 +79,7 @@ export default function Features() {
             <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
               How BuddyFi <CodeBlock text="rewrites" highlight /> the story
             </h2>
-            <p className="mt-4 text-xl text-slate-300">
+            <p className="mt-4 md:text-xl text-slate-300">
               We&apos;re bringing Web3 principles to hackathon team formation
             </p>
           </motion.div>

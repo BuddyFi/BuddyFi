@@ -55,10 +55,10 @@ export default function ProblemCards() {
             transition={{ duration: 0.6 }}
             className="mb-12 text-center"
           >
-            <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+            <h2 className="font-mono text-2xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
               The <CodeBlock text="hackathon" highlight /> dilemma
             </h2>
-            <p className="mt-4 text-xl text-slate-300">
+            <p className="md:mt-4 mt-2 md:text-xl text-slate-300">
               We&apos;ve all been there. The excitement of a new hackathon,
               followed by...
             </p>
@@ -74,10 +74,10 @@ export default function ProblemCards() {
                 className="group rounded-lg border border-slate-800 bg-slate-900 p-6 shadow-lg shadow-cyan-500/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10"
               >
                 <div className="mb-4 text-3xl">{item.icon}</div>
-                <h3 className="mb-2 font-mono text-xl font-semibold text-white">
+                <h3 className="mb-2 font-mono md:text-xl font-semibold text-white">
                   {item.title}
                 </h3>
-                <p className="text-slate-400">{item.description}</p>
+                <p className="text-slate-400 md:text-md text-sm">{item.description}</p>
               </motion.div>
             ))}
           </div>

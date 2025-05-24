@@ -21,7 +21,7 @@ export default function Roadmap() {
             <h2 className="font-mono text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
               The journey <CodeBlock text="ahead" highlight />
             </h2>
-            <p className="mt-4 text-xl text-slate-300">
+            <p className="mt-4 md:text-xl text-slate-300">
               Our vision for the future of BuddyFi
             </p>
           </motion.div>

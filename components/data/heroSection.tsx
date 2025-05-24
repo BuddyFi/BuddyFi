@@ -15,12 +15,12 @@ export default function IntroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             <motion.span 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="block"
+              className="md:text-4xl text-2xl block"
             >
               Connect. Build. Succeed.
             </motion.span>
@@ -28,7 +28,7 @@ export default function IntroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="block bg-gradient-to-br from-purple-300 via-sky-400 to-gray-50 bg-clip-text text-transparent mt-2"
+              className="md:text-4xl text-3xl block bg-gradient-to-br from-purple-300 via-sky-400 to-gray-50 bg-clip-text text-transparent mt-2"
             >
               Find the right builders for your project
             </motion.span>
@@ -37,7 +37,7 @@ export default function IntroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="mt-6 text-xl text-gray-300 max-w-4xl mx-auto"
+            className="mt-6 md:text-xl text-gray-300 max-w-4xl mx-auto"
           >
             BuddyFi matches developers with the perfect teammates for hackathons,
             using on-chain profiles, skill matching, and a familiar
