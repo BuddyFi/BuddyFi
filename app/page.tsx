@@ -1,5 +1,6 @@
 "use client";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import Link from "next/link";
@@ -14,6 +15,27 @@ import IntroSection from "@/components/data/heroSection";
 
 export default function Home() {
   const { publicKey } = useWallet();
+  const [hasProfile, setHasProfile] = useState(false);
+
+  useEffect(() => {
+    const checkProfile = async () => {
+      if (!publicKey) return;
+      
+      try {
+        const response = await fetch(`/api/data?walletAddress=${publicKey.toString()}`);
+        if (response.ok) {
+          setHasProfile(true);
+        } else {
+          setHasProfile(false);
+        }
+      } catch (error) {
+        console.error('Error checking profile:', error);
+        setHasProfile(false);
+      }
+    };
+
+    checkProfile();
+  }, [publicKey]);
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-black via-[#0a0a14] to-[#0f0f25] z-[-9999]">
@@ -56,28 +78,53 @@ export default function Home() {
               ) : (
                 <div className="flex justify-center">
                   <div className="flex md:flex-row flex-col gap-4">
-                    <div>
-                      <Link
-                        href="/create"
-                        className="flex items-center justify-center p-4 border border-indigo-500 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-medium text-sm"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mr-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+                    {hasProfile ? (
+                      <div>
+                        <Link
+                          href="/profile"
+                          className="flex items-center justify-center p-4 border border-indigo-500 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-medium text-sm"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          />
-                        </svg>
-                        Create Your Decentralized Profile
-                      </Link>
-                    </div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
+                          </svg>
+                          Manage Profile
+                        </Link>
+                      </div>
+                    ) : (
+                      <div>
+                        <Link
+                          href="/create"
+                          className="flex items-center justify-center p-4 border border-indigo-500 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-medium text-sm"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                          Create Your Decentralized Profile
+                        </Link>
+                      </div>
+                    )}
                     <div>
                       <Link
                         href="/discover"
