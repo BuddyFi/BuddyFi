@@ -335,7 +335,7 @@ const TeamDashboard = () => {
             <div className="max-w-6xl mx-auto">
               <div className="backdrop-blur-xl bg-white/2 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
                 <h2 className="text-xl font-bold mb-4">
-                  Connect Wallet to Access Team Dashboard
+                  Connect Wallet to Access Team Workspace
                 </h2>
                 <p className="text-gray-300 mb-6">
                   Connect your wallet to collaborate with your team
@@ -385,7 +385,7 @@ const TeamDashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
               <div>
                 <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
-                  Team Dashboard
+                  Team Workspace
                 </h1>
                 <p className="text-gray-400">
                   Collaborate with your team on Project X

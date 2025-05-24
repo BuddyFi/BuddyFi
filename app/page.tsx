@@ -16,7 +16,7 @@ export default function Home() {
   const { publicKey } = useWallet();
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen bg-gradient-to-tr from-black via-[#0a0a14] to-[#0f0f25] z-[-9999]">
       <Navbar />
 
       {/* hero section */}
@@ -38,9 +38,9 @@ export default function Home() {
         )}
         
 
-        <section className="py-16  container px-4 mx-auto">
-          <div className="relative glass-morphism rounded-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-300/20 to-blue-300/10 z-0"></div>
+        <section className="py-16 container px-4 mx-auto">
+          <div className="relative glass-morphism rounded-xl overflow-hidden">
+            <div className="absolute inset-0 backdrop-blur-xl bg-gradient-to-r from-purple-300/20 to-blue-300/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.3)] z-0"></div>
             <div className="relative z-10 p-8 md:p-12 text-center">
               <h2 className="text-3xl font-bold mb-6">
                 Ready to rewrite your hackathon story?

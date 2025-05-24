@@ -20,7 +20,7 @@ export default function ProfileDisplay() {
     if (!walletAddress) return;
 
     setLoading(true);
-    fetch(`/api/arweaveProfile?walletAddress=${walletAddress}`)
+    fetch(`/api/data?walletAddress=${walletAddress}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {

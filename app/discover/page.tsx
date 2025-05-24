@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import Navbar from "@/components/Navbar";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -84,6 +85,7 @@ interface ApiResponse {
 
 const Page = () => {
   const { publicKey } = useWallet();
+   const walletAddress = publicKey?.toBase58();
   const [profiles, setProfiles] = useState<UserProfile[]>([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState<"left" | "right" | null>(null);
@@ -101,7 +103,7 @@ const Page = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await fetch('/api/user');
+        const response = await fetch(`/api/user?walletAddress=${walletAddress}`);
         if (!response.ok) {
           throw new Error('Failed to fetch profiles');
         }

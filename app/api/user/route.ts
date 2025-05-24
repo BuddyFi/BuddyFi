@@ -4,13 +4,17 @@
 const PINATA_API_KEY = process.env.PINATA_API_KEY!;
 const PINATA_API_SECRET = process.env.PINATA_SECRET_API_KEY!;
 
-export async function GET() {
+export async function GET(request: Request) {
   if (!PINATA_API_KEY || !PINATA_API_SECRET) {
     return new Response(
       JSON.stringify({ error: "Pinata API keys are missing" }),
       { status: 400 }
     );
   }
+
+  // Get wallet address from query parameters
+  const { searchParams } = new URL(request.url);
+  const userWalletAddress = searchParams.get('walletAddress')?.toLowerCase();
 
   try {
     // Step 1: Get list of pins from Pinata
@@ -76,6 +80,9 @@ export async function GET() {
     validUsers.forEach(user => {
       const walletAddress = user.userData.walletAddress?.toLowerCase();
       if (!walletAddress) return; // Skip if no wallet address
+
+      // Skip if this is the user's own profile
+      if (userWalletAddress && walletAddress === userWalletAddress) return;
 
       const currentDate = new Date(user.pinInfo.date_pinned).getTime();
       const existingProfile = latestProfilesByWallet.get(walletAddress);
