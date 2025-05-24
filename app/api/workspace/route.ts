@@ -3,26 +3,13 @@
 
 const PINATA_API_KEY = process.env.PINATA_API_KEY!;
 const PINATA_API_SECRET = process.env.PINATA_SECRET_API_KEY!;
-const ADMIN_WALLET_ADDRESS = process.env.ADMIN_WALLET_ADDRESS!;
 
 export async function GET(request: Request) {
   // Get wallet address from query parameters
   const { searchParams } = new URL(request.url);
   const walletAddress = searchParams.get('walletAddress');
 
-//   console.log('Admin check:', { 
-//     providedWallet: walletAddress, 
-//     adminWallet: ADMIN_WALLET_ADDRESS,
-//     isMatch: walletAddress === ADMIN_WALLET_ADDRESS 
-//   });
 
-  // Check if the wallet address matches the admin address
-  if (!walletAddress || walletAddress !== ADMIN_WALLET_ADDRESS) {
-    return new Response(
-      JSON.stringify({ error: "Unauthorized access" }),
-      { status: 403 }
-    );
-  }
 
   if (!PINATA_API_KEY || !PINATA_API_SECRET) {
     return new Response(
@@ -114,13 +101,18 @@ export async function GET(request: Request) {
     // Convert the object back to an array
     const uniqueLatestProfiles = Object.values(latestProfilesByWallet);
 
+    // Filter out the user with matching wallet address if provided
+    const filteredProfiles = walletAddress 
+      ? uniqueLatestProfiles.filter((profile: any) => profile.userData.walletAddress !== walletAddress)
+      : uniqueLatestProfiles;
+
     // Sort by most recent pinned date
-    uniqueLatestProfiles.sort((a: any, b: any) =>
+    filteredProfiles.sort((a: any, b: any) =>
       new Date(b.pinInfo.date_pinned).getTime() - new Date(a.pinInfo.date_pinned).getTime()
     );
 
     // Get only the 4 most recent users
-    const recentUsers = uniqueLatestProfiles.slice(0, 3);
+    const recentUsers = filteredProfiles.slice(0, 3);
 
     // console.log('Filtered profiles:', {
     //   beforeFiltering: validUsers.length,
