@@ -10,7 +10,7 @@ const features = [
   {
     title: "On-chain Profiles",
     description:
-      "Your GitHub commits, StackOverflow answers, and previous hackathon projects are verified and stored on-chain, creating a trustless resume that speaks for itself.",
+      "Your GitHub commits, and previous hackathon projects are verified and stored on-chain, creating a trustless resume that speaks for itself.",
     icon: <Code className="h-10 w-10" />,
     color: "from-cyan-500 to-cyan-400",
     codeSnippet: `// Verify developer profile
