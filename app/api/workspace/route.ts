@@ -40,8 +40,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const walletAddress = searchParams.get('walletAddress');
 
-
-
   if (!PINATA_API_KEY || !PINATA_API_SECRET) {
     return new Response(
       JSON.stringify({ error: "Pinata API keys are missing" }),
@@ -68,10 +66,6 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    // console.log('Pinata response:', { 
-    //   totalPins: data.rows?.length || 0,
-    //   firstPin: data.rows?.[0]
-    // });
     
     // Get all pins
     const pins = data.rows || [];
@@ -115,10 +109,6 @@ export async function GET(request: Request) {
 
     // Filter out any failed requests
     const validUsers = usersData.filter(user => user !== null);
-    // console.log('Processed users:', { 
-    //   total: usersData.length,
-    //   valid: validUsers.length
-    // });
 
     // Group users by wallet address and keep only the most recent profile
     const latestProfilesByWallet = validUsers.reduce((acc: { [key: string]: any }, current) => {
@@ -149,19 +139,8 @@ export async function GET(request: Request) {
       new Date(b.pinInfo.date_pinned).getTime() - new Date(a.pinInfo.date_pinned).getTime()
     );
 
-<<<<<<< HEAD
     // Get only the 3 most recent users
-    const recentUsers = uniqueLatestProfiles.slice(0, 3);
-=======
-    // Get only the 4 most recent users
     const recentUsers = filteredProfiles.slice(0, 3);
->>>>>>> beta
-
-    // console.log('Filtered profiles:', {
-    //   beforeFiltering: validUsers.length,
-    //   afterFiltering: uniqueLatestProfiles.length,
-    //   returning: recentUsers.length
-    // });
 
     // Final sanitization before returning to ensure everything is serializable
     const sanitizedResponse = sanitizeDataForSerialization({ users: recentUsers });

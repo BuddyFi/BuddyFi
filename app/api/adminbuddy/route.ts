@@ -11,28 +11,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const walletAddress = searchParams.get('walletAddress');
 
-<<<<<<< HEAD
-  console.log('Admin check:', { 
-    providedWallet: walletAddress, 
-    adminWallet: ADMIN_WALLET_ADDRESS,
-    isMatch: walletAddress === ADMIN_WALLET_ADDRESS 
-  });
-=======
-  // console.log('Admin check:', { 
-  //   providedWallet: walletAddress, 
-  //   adminWallet: ADMIN_WALLET_ADDRESS,
-  //   isMatch: walletAddress === ADMIN_WALLET_ADDRESS 
-  // });
->>>>>>> beta
-
   // Check if the wallet address matches the admin address
   if (!walletAddress || walletAddress !== ADMIN_WALLET_ADDRESS) {
     return new Response(
-<<<<<<< HEAD
-      JSON.stringify({ error: "Unauthorized access" }),
-=======
       JSON.stringify({ error: "You are not authorized to access this feature" }),
->>>>>>> beta
       { status: 403 }
     );
   }
@@ -56,23 +38,12 @@ export async function GET(request: Request) {
     });
 
     if (!response.ok) {
-<<<<<<< HEAD
-      console.error('Pinata API error:', await response.text());
-=======
->>>>>>> beta
       return new Response(JSON.stringify({ error: "Failed to fetch pins" }), {
         status: response.status,
       });
     }
 
     const data = await response.json();
-<<<<<<< HEAD
-    console.log('Pinata response:', { 
-      totalPins: data.rows?.length || 0,
-      firstPin: data.rows?.[0]
-    });
-=======
->>>>>>> beta
     
     // Get all pins
     const pins = data.rows || [];
@@ -94,77 +65,19 @@ export async function GET(request: Request) {
           );
           
           if (!ipfsResponse.ok) {
-<<<<<<< HEAD
-            console.error('IPFS fetch error:', { hash: ipfsHash, status: ipfsResponse.status });
-            return null;
-          }
-
-=======
             return null;
           }
           
->>>>>>> beta
           const userData = await ipfsResponse.json();
           return {
             pinInfo: pin,
             userData
           };
         } catch (error) {
-<<<<<<< HEAD
-          console.error('IPFS fetch error:', { hash: ipfsHash, error });
-=======
->>>>>>> beta
           return null;
         }
       })
     );
-<<<<<<< HEAD
-  
-      // Filter out any failed requests
-      const validUsers = usersData.filter(user => user !== null);
-      console.log('Processed users:', { 
-        total: usersData.length,
-        valid: validUsers.length
-      });
-
-        // Group users by wallet address and keep only the most recent profile
-    const latestProfilesByWallet = validUsers.reduce((acc: { [key: string]: any }, current) => {
-      const walletAddress = current.userData.walletAddress;
-      if (!walletAddress) return acc;
-
-       // If this wallet hasn't been seen before, or if this profile is more recent
-       if (!acc[walletAddress] || 
-        new Date(current.pinInfo.date_pinned) > new Date(acc[walletAddress].pinInfo.date_pinned)) {
-      acc[walletAddress] = current;
-    }
-    return acc;
-  }, {});
-
-    // Convert the object back to an array
-    const uniqueLatestProfiles = Object.values(latestProfilesByWallet);
-
-    console.log('Filtered profiles:', {
-      beforeFiltering: validUsers.length,
-      afterFiltering: uniqueLatestProfiles.length
-    });
-
-      // Return all users data
-      return new Response(JSON.stringify({ users: uniqueLatestProfiles }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error: any) {
-      console.error('Server error:', error);
-      return new Response(
-        JSON.stringify({
-          error: "Internal Server Error",
-          message: error.message,
-        }),
-        { status: 500 }
-      );
-    }
-  }
-=======
 
     // Filter out any failed requests
     const validUsers = usersData.filter(user => user !== null);
@@ -194,9 +107,9 @@ export async function GET(request: Request) {
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",
+        message: error.message,
       }),
       { status: 500 }
     );
   }
 }
->>>>>>> beta

@@ -378,11 +378,7 @@ const TeamDashboard = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
               <div>
-<<<<<<< HEAD
                 <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
-=======
-                <h1 className="md:text-3xl text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
->>>>>>> beta
                   Team Workspace
                 </h1>
                 <p className="text-gray-400 md:text-md text-sm">
