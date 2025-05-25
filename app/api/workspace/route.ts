@@ -4,41 +4,12 @@
 const PINATA_API_KEY = process.env.PINATA_API_KEY!;
 const PINATA_API_SECRET = process.env.PINATA_SECRET_API_KEY!;
 
-// Helper function to recursively convert Sets to Arrays and ensure serializable data
-function sanitizeDataForSerialization(obj: any): any {
-  if (obj === null || obj === undefined) {
-    return obj;
-  }
-  
-  if (obj instanceof Set) {
-    return Array.from(obj);
-  }
-  
-  if (obj instanceof Map) {
-    return Object.fromEntries(obj);
-  }
-  
-  if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeDataForSerialization(item));
-  }
-  
-  if (typeof obj === 'object' && obj.constructor === Object) {
-    const sanitized: any = {};
-    for (const [key, value] of Object.entries(obj)) {
-      sanitized[key] = sanitizeDataForSerialization(value);
-    }
-    return sanitized;
-  }
-  
-  // For primitive types and functions, return as-is
-  // Functions will be stripped out during JSON serialization anyway
-  return obj;
-}
-
 export async function GET(request: Request) {
   // Get wallet address from query parameters
   const { searchParams } = new URL(request.url);
   const walletAddress = searchParams.get('walletAddress');
+
+
 
   if (!PINATA_API_KEY || !PINATA_API_SECRET) {
     return new Response(
@@ -66,6 +37,10 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
+    // console.log('Pinata response:', { 
+    //   totalPins: data.rows?.length || 0,
+    //   firstPin: data.rows?.[0]
+    // });
     
     // Get all pins
     const pins = data.rows || [];
@@ -92,13 +67,9 @@ export async function GET(request: Request) {
           }
           
           const userData = await ipfsResponse.json();
-          
-          // Thoroughly sanitize the entire userData object to ensure all Sets/Maps are converted
-          const sanitizedUserData = sanitizeDataForSerialization(userData);
-          
           return {
-            pinInfo: sanitizeDataForSerialization(pin),
-            userData: sanitizedUserData
+            pinInfo: pin,
+            userData
           };
         } catch (error) {
           console.error('IPFS fetch error:', { hash: ipfsHash, error });
@@ -109,14 +80,15 @@ export async function GET(request: Request) {
 
     // Filter out any failed requests
     const validUsers = usersData.filter(user => user !== null);
+    // console.log('Processed users:', { 
+    //   total: usersData.length,
+    //   valid: validUsers.length
+    // });
 
     // Group users by wallet address and keep only the most recent profile
     const latestProfilesByWallet = validUsers.reduce((acc: { [key: string]: any }, current) => {
       const walletAddress = current.userData.walletAddress;
       if (!walletAddress) return acc;
-
-      // Skip if the wallet address matches the requesting user's wallet
-      if (walletAddress === searchParams.get('walletAddress')) return acc;
 
       // If this wallet hasn't been seen before, or if this profile is more recent
       if (!acc[walletAddress] || 
@@ -139,14 +111,17 @@ export async function GET(request: Request) {
       new Date(b.pinInfo.date_pinned).getTime() - new Date(a.pinInfo.date_pinned).getTime()
     );
 
-    // Get only the 3 most recent users
+    // Get only the 4 most recent users
     const recentUsers = filteredProfiles.slice(0, 3);
 
-    // Final sanitization before returning to ensure everything is serializable
-    const sanitizedResponse = sanitizeDataForSerialization({ users: recentUsers });
+    // console.log('Filtered profiles:', {
+    //   beforeFiltering: validUsers.length,
+    //   afterFiltering: uniqueLatestProfiles.length,
+    //   returning: recentUsers.length
+    // });
 
     // Return recent users
-    return new Response(JSON.stringify(sanitizedResponse), {
+    return new Response(JSON.stringify({ users: recentUsers }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
