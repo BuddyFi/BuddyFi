@@ -36,11 +36,11 @@ export function FeatureCard({ title, description, icon, color, codeSnippet }: Fe
         </div>
       </div>
       <CardHeader>
-        <CardTitle className="font-mono text-2xl text-white">{title}</CardTitle>
-        <CardDescription className="text-slate-400">Verify your skills with proof of contribution</CardDescription>
+        <CardTitle className="font-mono md:text-2xl text-xl text-white">{title}</CardTitle>
+        <CardDescription className="text-slate-400 text-sm">Verify your skills with proof of contribution</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-slate-300">{description}</p>
+        <p className="text-slate-300 md:text-md text-sm">{description}</p>
       </CardContent>
 
       {/* Code snippet overlay */}

@@ -97,12 +97,21 @@ export default function ProfilePage() {
       <Navbar />
       <div className="container mx-auto px-4 py-12 mt-16">
         <div ref={cardRef} className="max-w-5xl mx-auto">
+<<<<<<< HEAD
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.3)] rounded-2xl p-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {/* Left Column - Profile Info */}
               <div className="flex flex-col items-center md:items-start gap-8">
                 <div className="relative group">
                   <div className="h-40 w-40 rounded-2xl overflow-hidden border-4 border-purple-500/20 shadow-lg transition-transform duration-300 group-hover:scale-105">
+=======
+          <div className="backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.3)] rounded-2xl md:p-8 p-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              {/* Left Column - Profile Info */}
+              <div className="flex md:flex-col flex-row items-center md:items-start gap-8">
+                <div className="relative group">
+                  <div className="md:h-40 md:w-40 h-20 w-20 rounded-2xl overflow-hidden border-4 border-purple-500/20 shadow-lg transition-transform duration-300 group-hover:scale-105">
+>>>>>>> beta
                     <img
                       src="./avatar.avif"
                       alt={name}
@@ -115,8 +124,13 @@ export default function ProfilePage() {
                 <div className="flex-1 w-full">
                   <div className="flex flex-col gap-4">
                     <div>
+<<<<<<< HEAD
                       <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{name}</h1>
                       <p className="text-gray-400 mt-1">{profileData.timezone}</p>
+=======
+                      <h1 className="md:text-3xl text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{name}</h1>
+                      <p className="text-gray-400 mt-1 text-sm">{profileData.timezone}</p>
+>>>>>>> beta
                     </div>
 
                     {/* <div className="flex flex-wrap gap-3">
@@ -133,12 +147,20 @@ export default function ProfilePage() {
 
               {/* Right Column - Content */}
               <div className="md:col-span-2 space-y-8">
+<<<<<<< HEAD
                 <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-6">
+=======
+                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-4">
+>>>>>>> beta
                   <h2 className="text-xl font-bold mb-4 text-purple-300">About</h2>
                   <p className="text-gray-300 whitespace-pre-line leading-relaxed">{bio}</p>
                 </div>
 
+<<<<<<< HEAD
                 <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-6">
+=======
+                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-4">
+>>>>>>> beta
                   <h2 className="text-xl font-bold mb-4 text-purple-300">Skills</h2>
                   <div className="flex flex-wrap gap-2">
                     {skills.map((skill: string) => (
@@ -152,11 +174,19 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-6">
                   <h2 className="text-xl font-bold mb-4 text-purple-300">Contact</h2>
                   <div className="space-y-3">
                     <a
                       href={`https://github.com/${social.github}`}
+=======
+                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-4">
+                  <h2 className="text-xl font-bold mb-4 text-purple-300">Contact</h2>
+                  <div className="space-y-3">
+                    <a
+                      href={`/dashboard?${social.github}`}
+>>>>>>> beta
                       rel="noopener noreferrer"
                       className="flex items-center text-gray-300 hover:text-purple-300 transition-colors duration-300"
                     >
@@ -172,8 +202,13 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-6">
+=======
+                <div className="grid grid-cols-2 md:gap-6 gap-4">
+                  <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-4">
+>>>>>>> beta
                     <h3 className="font-medium mb-4 text-purple-300">Availability</h3>
                     <Badge className="bg-green-500/20 text-green-400 border border-green-500/50 px-4 py-1.5">
                       {profileData.availability}
@@ -181,9 +216,15 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-6">
+<<<<<<< HEAD
                     <h3 className="font-medium mb-4 text-purple-300">GitHub Activity</h3>
                     {social.github ? (
                       <div>Activity</div>
+=======
+                    <h3 className="font-medium mb-4 text-purple-300">Role</h3>
+                    {social.github ? (
+                      <div>Developer</div>
+>>>>>>> beta
                     ) : (
                       <div className="text-center py-4">
                         <p className="text-gray-400">

@@ -329,7 +329,7 @@ const TeamDashboard = () => {
             <div className="max-w-6xl mx-auto">
               <div className="backdrop-blur-xl bg-white/2 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
                 <h2 className="text-xl font-bold mb-4">
-                  Connect Wallet to Access Team Dashboard
+                  Connect Wallet to Access Team Workspace
                 </h2>
                 <p className="text-gray-300 mb-6">
                   Connect your wallet to collaborate with your team
@@ -350,7 +350,7 @@ const TeamDashboard = () => {
       <Navbar />
       {isTrialExpired && (
         <div className="fixed top-16 left-0 right-0 z-50 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 shadow-lg animate-in slide-in-from-top duration-300">
-          <div className="container mx-auto flex items-center justify-between">
+          <div className="container mx-auto flex flex-col gap-4 md:flex-row gap-1 items-center justify-between">
             <div className="flex items-center space-x-2">
               <AlertCircle className="h-5 w-5" />
               <span>Your {TRIAL_DAYS}-day trial has ended. Upgrade now to continue accessing all features.</span>
@@ -378,10 +378,14 @@ const TeamDashboard = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
               <div>
+<<<<<<< HEAD
                 <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
+=======
+                <h1 className="md:text-3xl text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
+>>>>>>> beta
                   Team Workspace
                 </h1>
-                <p className="text-gray-400">
+                <p className="text-gray-400 md:text-md text-sm">
                   Collaborate with your team on Project X
                 </p>
               </div>
@@ -389,11 +393,11 @@ const TeamDashboard = () => {
                 <div className="text-right">
                   <div className="flex items-center mb-1">
                     <Clock className="text-purple-400 h-4 w-4 mr-2" />
-                    <span className="text-sm text-gray-300">
+                    <span className="md:text-sm text-xs text-gray-300">
                       Submission Deadline
                     </span>
                   </div>
-                  <div className="text-xl font-mono font-bold text-white">
+                  <div className="md:text-xl font-mono font-bold text-white">
                     {daysRemaining}d {hoursRemaining}h
                   </div>
                 </div>

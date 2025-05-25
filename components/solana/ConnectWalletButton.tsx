@@ -114,7 +114,11 @@ export default function ConnectWalletButton() {
                             className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
                             onClick={handleViewMessages}
                         >
+<<<<<<< HEAD
                             Team Workspace
+=======
+                            View Workspace
+>>>>>>> beta
                         </li>
                         
                         <li 

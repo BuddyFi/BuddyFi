@@ -10,7 +10,7 @@ const Navbar: React.FC = () => (
         <img
           src="./BuddyFi_logo.svg"
           alt="BuddyFi logo"
-          className="md:h-15 md:w-15 h-10 w-10"
+          className="md:h-12 md:w-12 h-10 w-10"
         />
         <p className="md:text-2xl text-xl font-bold">BuddyFi</p>
       </div>

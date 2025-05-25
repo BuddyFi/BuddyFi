@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Navbar from "@/components/Navbar";
@@ -27,6 +28,7 @@ interface PinataUser {
 
 const Page = () => {
   const { publicKey } = useWallet();
+  const walletAddress = publicKey?.toBase58();
   const [likedByProfiles, setLikedByProfiles] = useState<UserProfile[]>([]);
   const [matchedProfiles, setMatchedProfiles] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +45,7 @@ const Page = () => {
         setIsLoading(true);
         setError(null);
         
-        const response = await fetch('/api/match');
+        const response = await fetch(`/api/match?walletAddress=${walletAddress}`);
         if (!response.ok) {
           throw new Error('Failed to fetch user data');
         }
@@ -272,7 +274,7 @@ const Page = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-4">Your Connections</h1>
+              <h1 className="text-3xl font-bold mb-4">Find Your Connections</h1>
             </div>
 
             {!publicKey ? (

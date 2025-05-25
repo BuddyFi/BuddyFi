@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+<<<<<<< HEAD
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,24 @@ import gsap from "gsap";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import Navbar from "@/components/Navbar";
 
+=======
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { useWallet } from "@solana/wallet-adapter-react";
+import gsap from "gsap";
+import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
+import Navbar from "@/components/Navbar";
+import { useRouter } from "next/navigation";
+
+>>>>>>> beta
 type IpfsData = {
   name: string;
   bio: string;
@@ -27,6 +46,96 @@ type IpfsData = {
   };
   walletAddress: string;
 };
+<<<<<<< HEAD
+=======
+
+type UserData = {
+  pinInfo: any;
+  userData: IpfsData;
+};
+
+export default function AdminBuddyPage() {
+  const { publicKey } = useWallet();
+  const cardRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [showUserDetails, setShowUserDetails] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!publicKey) return;
+
+    fetch(`/api/adminbuddy?walletAddress=${publicKey.toString()}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || "You are not authorized to access this feature");
+        }
+        return res.json();
+      })
+      .then(({ users }) => {
+        console.log("Fetched users:", users); // Debug log
+        setUsers(users || []);
+        setError(null);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch users:", error);
+        setUsers([]);
+        setError(error.message);
+      })
+      .finally(() => setLoading(false));
+  }, [publicKey]);
+
+  useEffect(() => {
+    if (cardRef.current) {
+      gsap.fromTo(
+        cardRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+      );
+    }
+  }, [publicKey]);
+
+  if (!publicKey) {
+    return (
+      <div className="text-center py-10">
+        <p className="mb-4">Connect your wallet to access admin features</p>
+        <div className="flex justify-center">
+          <ConnectWalletButton />
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-10">
+        <div className="w-12 h-12 border-4 border-indigo-600 border-dashed rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-gray-400 mb-4">{error}</p>
+        <Button
+          variant="outline"
+          onClick={() => router.push('/')}
+        >
+          Back to Home
+        </Button>
+      </div>
+    );
+  }
+
+  const handleUserClick = (user: UserData) => {
+    setSelectedUser(user);
+    setShowUserDetails(true);
+  };
+>>>>>>> beta
 
 type UserData = {
   pinInfo: any;

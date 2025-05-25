@@ -10,45 +10,67 @@ interface RoadmapTimelineProps {
 
 export function RoadmapTimeline({ inView }: RoadmapTimelineProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
+const roadmap = [
+  {
+    quarter: "Q2 2024",
+    title: "Devnet MVP Launch",
+    description: "Core matching and team dashboard built on Solana Devnet.",
+    items: [
+      "Solana wallet integration",
+      "Decentralized profile creation (IPFS + on-chain hash)",
+      "Swipe-to-match interface",
+      "Live team dashboard & task management",
+      "Devnet-based subscription payments"
+    ],
+    details:
+      "We launched the MVP of BuddyFi on Solana devnet with fully functional profiles, matchmaking, and a collaborative dashboard. This validated the product direction and technical feasibility.",
+    icon: <DevIcon.BracketsIcon className="h-6 w-6" />,
+  },
+  {
+    quarter: "Q3 2024",
+    title: "Mainnet Launch + Badge System",
+    description: "Move to Solana mainnet and introduce engagement cNFT badges.",
+    items: [
+      "Mainnet deployment",
+      "Subscription payments on Solana mainnet",
+      "cNFT badge minting for hackathon milestones",
+      "Improved mobile experience",
+      "Public launch campaign"
+    ],
+    details:
+      "We’ll go live on mainnet with a polished product, launch our badge system using compressed NFTs, and begin onboarding users via hackathon partnerships and Solana-native onboarding campaigns.",
+    icon: <DevIcon.BracketsIcon className="h-6 w-6" />,
+  },
+  {
+    quarter: "Q4 2024",
+    title: "Hackathon Partnerships & Growth",
+    description: "Partner with Indian hackathons and scale community onboarding.",
+    items: [
+      "Hackathon organizer dashboard",
+      "In-app event calendar",
+      "Partnered onboarding with universities",
+      "Ambassador & referral system"
+    ],
+    details:
+      "We’ll scale growth by working directly with hackathon organizers and campuses to onboard builders in India, with localized outreach and event-driven growth.",
+    icon: <DevIcon.BracketsIcon className="h-6 w-6" />,
+  },
+  {
+    quarter: "Q1 2025",
+    title: "Open Source & Developer Ecosystem Tools",
+    description: "Open source BuddyFi and release a dev toolkit for on-chain team creation.",
+    items: [
+      "MIT open-source release",
+      "Team formation SDK",
+      "Integration docs for hackathons",
+      "Public roadmap & community feedback"
+    ],
+    details:
+      "We’ll open source the codebase and empower other builders and event organizers to use BuddyFi’s APIs and SDKs for seamless on-chain team formation on Solana.",
+    icon: <DevIcon.TerminalIcon className="h-6 w-6" />,
+  },
+]
 
-  const roadmap = [
-    {
-      quarter: "Q1 2025",
-      title: "Beta Launch",
-      description: "Initial release with core matching features and basic profiles.",
-      items: ["Wallet integration", "Basic matching algorithm", "Profile creation"],
-      details:
-        "Our beta launch will focus on the core functionality of matching developers based on complementary skills and interests. We'll start with Ethereum wallet integration and basic profile creation.",
-      icon: <DevIcon.CodeIcon className="h-6 w-6" />,
-    },
-    {
-      quarter: "Q2 2025",
-      title: "Hackathon Integration",
-      description: "Partner with major hackathon organizers for seamless team formation.",
-      items: ["ETHGlobal partnership", "In-app hackathon calendar", "Team registration API"],
-      details:
-        "We'll integrate directly with major hackathon platforms to streamline the team formation and registration process. This includes an API for hackathon organizers and an in-app calendar of upcoming events.",
-      icon: <DevIcon.BracketsIcon className="h-6 w-6" />,
-    },
-    {
-      quarter: "Q3 2025",
-      title: "DAO Governance",
-      description: "Community-driven development and feature prioritization.",
-      items: ["Governance token", "Proposal system", "Community treasury"],
-      details:
-        "BuddyFi will transition to community governance with the launch of our governance token. Token holders will be able to vote on feature prioritization, partnerships, and treasury allocations.",
-      icon: <DevIcon.TerminalIcon className="h-6 w-6" />,
-    },
-    {
-      quarter: "Q4 2026",
-      title: "Global Expansion",
-      description: "Support for regional hackathons and localized matching.",
-      items: ["Multi-language support", "Regional hubs", "Local event integration"],
-      details:
-        "We'll expand globally with support for regional hackathons, multiple languages, and localized matching algorithms that account for regional tech ecosystems and preferences.",
-      icon: <DevIcon.SwipeIcon className="h-6 w-6" />,
-    },
-  ]
 
   return (
     <div className="relative mt-20">
