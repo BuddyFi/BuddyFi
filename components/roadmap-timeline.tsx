@@ -13,63 +13,58 @@ export function RoadmapTimeline({ inView }: RoadmapTimelineProps) {
 const roadmap = [
   {
     quarter: "Q2 2024",
-    title: "Devnet MVP Launch",
-    description: "Core matching and team dashboard built on Solana Devnet.",
+    title: "Mobile‑First Experience",
+    description: "Polish and optimize BuddyFi’s UI for Android and iOS.",
     items: [
-      "Solana wallet integration",
-      "Decentralized profile creation (IPFS + on-chain hash)",
-      "Swipe-to-match interface",
-      "Live team dashboard & task management",
-      "Devnet-based subscription payments"
+      "Responsive swipe and dashboard layouts",
+      "Okto wallet integration for in‑app payments",
+      "Mobile performance tuning and testing"
     ],
     details:
-      "We launched the MVP of BuddyFi on Solana devnet with fully functional profiles, matchmaking, and a collaborative dashboard. This validated the product direction and technical feasibility.",
-    icon: <DevIcon.BracketsIcon className="h-6 w-6" />,
+      "Deliver a polished, responsive interface on both Android and iOS to boost session times, simplify wallet flows, and improve overall user satisfaction.",
+    icon: <DevIcon.DeviceMobileIcon className="h-6 w-6" />,
   },
   {
     quarter: "Q3 2024",
-    title: "Mainnet Launch + Badge System",
-    description: "Move to Solana mainnet and introduce engagement cNFT badges.",
+    title: "cNFT Badge Rollout",
+    description: "Launch compressed‑NFT badges for key achievements.",
     items: [
-      "Mainnet deployment",
-      "Subscription payments on Solana mainnet",
-      "cNFT badge minting for hackathon milestones",
-      "Improved mobile experience",
-      "Public launch campaign"
+      "Mint 5 initial badge types (e.g., First Hackathon, Team MVP)",
+      "Store metadata snapshots on Arweave",
+      "Integrate badge display in profiles and dashboards"
     ],
     details:
-      "We’ll go live on mainnet with a polished product, launch our badge system using compressed NFTs, and begin onboarding users via hackathon partnerships and Solana-native onboarding campaigns.",
-    icon: <DevIcon.BracketsIcon className="h-6 w-6" />,
+      "Introduce our on‑chain reward system by minting cNFTs for core milestones and embedding them into user profiles and team views to incentivize engagement.",
+    icon: <DevIcon.CertificateIcon className="h-6 w-6" />,
   },
   {
     quarter: "Q4 2024",
-    title: "Hackathon Partnerships & Growth",
-    description: "Partner with Indian hackathons and scale community onboarding.",
+    title: "Developer Onboarding & Engagement",
+    description: "Activate and retain a thriving developer community.",
     items: [
-      "Hackathon organizer dashboard",
-      "In-app event calendar",
-      "Partnered onboarding with universities",
-      "Ambassador & referral system"
+      "Onboard 500+ active developers",
+      "Run in‑app tutorials and community workshops",
+      "Achieve ≥ 60% 30‑day retention"
     ],
     details:
-      "We’ll scale growth by working directly with hackathon organizers and campuses to onboard builders in India, with localized outreach and event-driven growth.",
-    icon: <DevIcon.BracketsIcon className="h-6 w-6" />,
+      "Execute targeted marketing, in‑app guidance, and weekly community events to drive sign‑ups, ensure match-to-dashboard flows, and maintain high retention rates.",
+    icon: <DevIcon.ClockIcon className="h-6 w-6" />,
   },
   {
-    quarter: "Q1 2025",
-    title: "Open Source & Developer Ecosystem Tools",
-    description: "Open source BuddyFi and release a dev toolkit for on-chain team creation.",
+    quarter: "Q5 2024",
+    title: "Open Source Toolkit",
+    description: "Release BuddyFi’s core codebase and Team Formation SDK.",
     items: [
-      "MIT open-source release",
-      "Team formation SDK",
-      "Integration docs for hackathons",
-      "Public roadmap & community feedback"
+      "Publish MIT‑licensed GitHub repo",
+      "Provide SDKs and API documentation",
+      "Host public roadmap and feedback channels"
     ],
     details:
-      "We’ll open source the codebase and empower other builders and event organizers to use BuddyFi’s APIs and SDKs for seamless on-chain team formation on Solana.",
+      "Empower hackathon organizers and developers by open‑sourcing our contracts, SDKs, and docs—enabling community contributions and broader ecosystem integration.",
     icon: <DevIcon.TerminalIcon className="h-6 w-6" />,
   },
-]
+];
+
 
 
   return (
