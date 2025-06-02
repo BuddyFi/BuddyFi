@@ -1,12 +1,15 @@
-# BuddyFi Architecture Diagram
+@@ -0,0 +1,195 @@
+
+# BuddyFi Application Architecture
 
 ```mermaid
 graph TB
     %% Main Application Structure
-    subgraph "BuddyFi Application"
-        direction TB
-        
-        %% Pages/Routes
+    subgraph "Frontend Application"
+        App[App Root]
+        Layout[Layout Component]
+
+        %% Pages
         subgraph "Pages"
             Home[Home Page]
             Auth[Authentication]
@@ -19,79 +22,152 @@ graph TB
             Admin[Admin Dashboard]
         end
 
-        %% Core Components
-        subgraph "Core Components"
-            Navbar[Navbar]
+        %% Components
+        subgraph "Components"
+            Nav[Navbar]
             Footer[Footer]
-            ProfileCreator[Profile Creator]
+            UserCard[User Card]
             ProfileForm[Profile Form]
             ProfileDisplay[Profile Display]
-            UserCard[User Card]
             MessageChat[Message Chat]
             SubscriptionCard[Subscription Card]
-        end
-
-        %% UI Components
-        subgraph "UI Components"
             DevIcon[Dev Icon]
             RoadmapTimeline[Roadmap Timeline]
             FeatureCard[Feature Card]
             TestimonialCarousel[Testimonial Carousel]
-            CodeBlock[Code Block]
+        end
+
+        %% UI Components
+        subgraph "UI Components"
+            UI[UI Library]
+            Buttons[Buttons]
+            Forms[Forms]
+            Modals[Modals]
+            Cards[Cards]
         end
 
         %% Services
         subgraph "Services"
             ProfileService[Profile Service]
+            AuthService[Auth Service]
+            PaymentService[Payment Service]
         end
 
-        %% Context/State Management
-        subgraph "State Management"
+        %% Context
+        subgraph "Context"
             SubscriptionContext[Subscription Context]
             WalletProvider[Wallet Provider]
         end
 
         %% Data Flow
-        Home --> Navbar
-        Home --> Footer
-        Home --> FeatureCard
-        Home --> TestimonialCarousel
-        
-        Auth --> ProfileCreator
-        ProfileCreator --> ProfileForm
-        
-        Dashboard --> UserCard
-        Dashboard --> MessageChat
-        
-        Profile --> ProfileDisplay
+        App --> Layout
+        Layout --> Nav
+        Layout --> Footer
+
+        %% Page Connections
+        App --> Home
+        App --> Auth
+        App --> Dashboard
+        App --> Discover
+        App --> Profile
+        App --> Workspace
+        App --> Payment
+        App --> Matches
+        App --> Admin
+
+        %% Component Usage
         Profile --> ProfileForm
-        
-        Workspace --> CodeBlock
-        Workspace --> DevIcon
-        
+        Profile --> ProfileDisplay
+        Discover --> UserCard
+        Workspace --> MessageChat
         Payment --> SubscriptionCard
-        
-        %% Service Connections
-        ProfileService --> ProfileCreator
-        ProfileService --> ProfileForm
-        ProfileService --> ProfileDisplay
-        
-        %% Context Connections
+
+        %% Service Integration
+        ProfileService --> Profile
+        AuthService --> Auth
+        PaymentService --> Payment
+
+        %% Context Integration
         SubscriptionContext --> SubscriptionCard
         WalletProvider --> Payment
     end
 
     %% Styling
-    classDef page fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
-    classDef component fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
-    classDef service fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
-    classDef context fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
-    
+     classDef page fill:#1a1a2e,stroke:#eee,stroke-width:2px,color:#00f5ff
+     classDef component fill:#16213e,stroke:#64ffda,stroke-width:2px,color:#64ffda
+     classDef service fill:#1a2332,stroke:#4caf50,stroke-width:2px,color:#8bc34a
+     classDef context fill:#2d1b30,stroke:#ff6b6b,stroke-width:2px,color:#ff8a80
+
     class Home,Auth,Dashboard,Discover,Profile,Workspace,Payment,Matches,Admin page
-    class Navbar,Footer,ProfileCreator,ProfileForm,ProfileDisplay,UserCard,MessageChat,SubscriptionCard,DevIcon,RoadmapTimeline,FeatureCard,TestimonialCarousel,CodeBlock component
-    class ProfileService service
+    class Nav,Footer,UserCard,ProfileForm,ProfileDisplay,MessageChat,SubscriptionCard,DevIcon,RoadmapTimeline,FeatureCard,TestimonialCarousel component
+    class ProfileService,AuthService,PaymentService service
     class SubscriptionContext,WalletProvider context
 ```
+
+## Key Features and Data Flow
+
+1. **Authentication Flow**
+
+   - User authentication handled through Auth Service
+   - Protected routes and session management
+   - Wallet integration for Web3 features
+
+2. **Profile Management**
+
+   - Profile creation and editing
+   - Skill tags and user information
+   - Profile display and matching
+
+3. **Workspace Features**
+
+   - Real-time messaging
+   - Collaboration tools
+   - Project management
+
+4. **Payment Integration**
+
+   - Subscription management
+   - Payment processing
+   - Trial period handling
+
+5. **Discovery and Matching**
+   - User discovery
+   - Matching algorithm
+   - Connection management
+
+## Component Hierarchy
+
+1. **Layout Components**
+
+   - Navbar
+   - Footer
+   - Global layout wrapper
+
+2. **Feature Components**
+
+   - User cards
+   - Profile forms
+   - Message chat
+   - Subscription cards
+
+3. **UI Components**
+   - Reusable UI elements
+   - Form components
+   - Modal components
+   - Card components
+
+## Data Management
+
+1. **Context Providers**
+
+   - Subscription context
+   - Wallet provider
+   - Authentication state
+
+2. **Services**
+   - Profile service
+   - Authentication service
+   - Payment service
 
 ## File Structure
 
@@ -99,70 +175,30 @@ graph TB
 buddyfi/
 ├── app/                    # Next.js app directory
 │   ├── (auth)/            # Authentication routes
-│   ├── adminbuddy/        # Admin dashboard
-│   ├── api/               # API routes
-│   ├── dashboard/         # User dashboard
-│   ├── discover/          # Discovery page
-│   ├── matches/           # Matches page
+│   ├── dashboard/         # Dashboard pages
+│   ├── discover/          # Discovery features
+│   ├── profile/           # Profile management
+│   ├── workspace/         # Workspace features
 │   ├── payment/           # Payment processing
-│   ├── profile/           # User profile
-│   └── workspace/         # Workspace features
+│   ├── matches/           # Matching system
+│   └── adminbuddy/        # Admin dashboard
 ├── components/            # Reusable components
-│   ├── data/             # Data-related components
-│   ├── solana/           # Solana integration components
-│   └── ui/               # UI components
+│   ├── ui/               # UI components
+│   ├── data/            # Data display components
+│   └── solana/          # Blockchain components
 ├── context/              # React context providers
+├── services/             # API services
 ├── hooks/               # Custom React hooks
-├── lib/                 # Utility libraries
-├── public/              # Static assets
-├── services/            # Service layer
-│   └── profile/         # Profile-related services
-├── types/               # TypeScript type definitions
-└── utils/               # Utility functions
+├── utils/               # Utility functions
+├── types/               # TypeScript types
+└── public/              # Static assets
 ```
 
-## Key Features and Data Flow
+This architecture diagram provides a comprehensive overview of the application structure, component relationships, and data flow. You can import this Mermaid diagram into Figma by:
 
-1. **Authentication Flow**
-   - User authentication through (auth) routes
-   - Profile creation and management
-   - Wallet connection through WalletProvider
+1. Copy the Mermaid code
+2. Use a Mermaid to SVG converter
+3. Import the SVG into Figma
+4. Customize the styling and layout as needed
 
-2. **Core Features**
-   - Dashboard for user overview
-   - Profile management and display
-   - Discovery and matching system
-   - Workspace collaboration
-   - Payment and subscription management
-
-3. **Data Management**
-   - Profile data handled by ProfileService
-   - Subscription state managed by SubscriptionContext
-   - Wallet integration through WalletProvider
-
-4. **UI Components**
-   - Reusable UI components in components/ui
-   - Feature-specific components in components/
-   - Solana integration components
-
-## Component Relationships
-
-1. **Profile System**
-   - ProfileCreator → ProfileForm → ProfileDisplay
-   - ProfileService manages data flow
-   - UserCard displays profile information
-
-2. **Subscription System**
-   - SubscriptionCard displays plans
-   - SubscriptionContext manages state
-   - Payment routes handle transactions
-
-3. **Workspace Features**
-   - CodeBlock for code display
-   - DevIcon for developer identification
-   - MessageChat for communication
-
-4. **Navigation**
-   - Navbar for main navigation
-   - Footer for additional links
-   - Dashboard as central hub 
+The diagram shows the main application structure, component hierarchy, and how different parts of the application interact with each other. It's designed to be clear and organized, making it suitable for stakeholder presentations.
