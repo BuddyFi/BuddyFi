@@ -68,3 +68,7 @@ npm run dev
 ```
 
 <!-- GitAds-Verify: DKHSU1P8H6VHG77LYE9HLXUKWYVXFX9W -->
+
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=karancodebase/buddyfi@github)](https://gitads.dev/v1/ad-track?source=karancodebase/buddyfi@github)
+
