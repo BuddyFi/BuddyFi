@@ -65,3 +65,5 @@ git clone https://github.com/your-org/buddyfi.git
 cd buddyfi
 npm install
 npm run dev
+
+<!-- GitAds-Verify: DKHSU1P8H6VHG77LYE9HLXUKWYVXFX9W -->
