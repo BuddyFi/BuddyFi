@@ -1,21 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { initializeProfile } from "@/lib/solana/profile";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import ProfileForm from "@/components/ProfileForm";
 import Link from "next/link";
 import { setCID } from "@/utils/cidStore";
-import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle } from "lucide-react";
 
-export default function ProfileCreator() {
+interface ProfileCreatorProps {
+  onLoadingChange?: (loading: boolean) => void;
+}
+
+export default function ProfileCreator({ onLoadingChange }: ProfileCreatorProps) {
   const { connection } = useConnection();
   const { publicKey, sendTransaction, wallet } = useWallet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [txId, setTxId] = useState("");
   const [ipfsCid, setIpfsCid] = useState("");
+
+  useEffect(() => {
+    onLoadingChange?.(loading);
+  }, [loading, onLoadingChange]);
 
   const handleProfileSubmit = async (formData: any) => {
     if (!publicKey || !wallet?.adapter) {
@@ -63,9 +71,9 @@ export default function ProfileCreator() {
 
   if (!publicKey) {
     return (
-      <div className="max-w-md mx-auto mt-20 p-6 bg-gradient-to-tr from-gray-900 to-gray-800 rounded-lg shadow-lg text-white text-center">
-        <h1 className="text-2xl font-semibold mb-4">Connect Your Wallet</h1>
-        <p className="mb-6 text-gray-300">
+      <div className="flex flex-col items-center justify-center p-8 bg-zinc-800 rounded-lg shadow-xl text-center space-y-6">
+        <h1 className="text-3xl font-bold text-indigo-400">Connect Your Wallet</h1>
+        <p className="text-gray-300">
           To create your BuddyFi profile, please connect your Solana wallet.
         </p>
         <ConnectWalletButton />
@@ -73,72 +81,64 @@ export default function ProfileCreator() {
     );
   }
 
-  return (
-    <div className="max-w-2xl mx-auto mt-12 p-8 bg-zinc-900 rounded-2xl shadow-xl text-white">
-      <h1 className="text-3xl font-bold text-indigo-400 mb-6">
-        🚀 Create Your BuddyFi Profile
-      </h1>
-
-      {error && (
-        <div className="mb-6 flex items-center gap-2 p-4 bg-red-500/10 border border-red-500 text-red-400 rounded-md">
-          <AlertCircle className="w-5 h-5" />
-          <span>{error}</span>
+  if (txId) {
+    return (
+      <div className="p-8 bg-green-700/30 border border-green-600 rounded-lg text-white space-y-4">
+        <div className="flex items-center gap-3 text-green-400 text-2xl font-semibold">
+          <CheckCircle className="w-6 h-6" />
+          <h2>Profile Created Successfully!</h2>
         </div>
-      )}
-
-      {txId ? (
-        <div className="p-6 bg-green-500/10 border border-green-500 rounded-md">
-          <div className="flex items-center gap-2 text-green-400 text-lg font-semibold mb-3">
-            <CheckCircle className="w-6 h-6" />
-            Profile Created Successfully!
-          </div>
-          <p className="text-sm text-gray-300 mb-3">
-            Your profile is now live on-chain and stored on IPFS.
-          </p>
-          <div className="mb-3">
-            <div className="font-semibold text-gray-200">Transaction:</div>
-            <a
-              href={`https://explorer.solana.com/tx/${txId}?cluster=devnet`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-indigo-400 underline break-words"
-            >
-              {txId}
-            </a>
-          </div>
-          <div className="mb-3">
-            <div className="font-semibold text-gray-200">IPFS CID:</div>
-            <span className="font-mono text-sm break-words text-gray-300">
-              {ipfsCid}
-            </span>
-          </div>
-
-          <Link
-            href="/profile"
-            className="inline-block mt-4 px-5 py-2 bg-indigo-600 rounded-full hover:bg-indigo-700 transition"
+        <p className="text-gray-300">
+          Your profile is now live on-chain and stored on IPFS.
+        </p>
+        <div>
+          <div className="font-semibold text-gray-200">Transaction:</div>
+          <a
+            href={`https://explorer.solana.com/tx/${txId}?cluster=devnet`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 underline break-words text-sm"
           >
-            View My Profile
-          </Link>
+            {txId}
+          </a>
         </div>
-      ) : (
-        <>
-          <p className="mb-6 text-gray-300">
-            Your profile will be pinned to IPFS and linked on-chain with your
-            wallet. Let&apos;s make it awesome!
-          </p>
-          <ProfileForm
-            onSubmit={handleProfileSubmit}
-            isSubmitting={loading}
-          />
-        </>
-      )}
+        <div>
+          <div className="font-semibold text-gray-200">IPFS CID:</div>
+          <span className="font-mono text-sm break-words text-gray-300">
+            {ipfsCid}
+          </span>
+        </div>
+        <Link
+          href="/profile"
+          className="inline-block mt-4 px-6 py-2.5 bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors font-medium"
+        >
+          View My Profile
+        </Link>
+      </div>
+    );
+  }
 
-      {loading && (
-        <div className="flex items-center gap-2 mt-6 text-indigo-400">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span>Uploading to IPFS & initializing on Solana...</span>
+  if (error) {
+    return (
+      <div className="p-8 bg-red-700/30 border border-red-600 rounded-lg text-white space-y-4">
+        <div className="flex items-center gap-3 text-red-400 text-2xl font-semibold">
+          <AlertCircle className="w-6 h-6" />
+          <h2>Profile Creation Failed</h2>
         </div>
-      )}
+        <p className="text-gray-300">{error}</p>
+        {/* Optionally add a retry button or guidance */}
+      </div>
+    );
+  }
+
+  // Main form view
+  return (
+    <div className="p-8 bg-zinc-800 rounded-lg shadow-xl text-white space-y-6">
+      <h1 className="text-3xl font-bold text-indigo-400 text-center">🚀 Create Your BuddyFi Profile</h1>
+      <p className="text-gray-300 text-center">
+        Your profile will be pinned to IPFS and linked on-chain with your wallet. Let&apos;s make it awesome!
+      </p>
+      <ProfileForm onSubmit={handleProfileSubmit} isSubmitting={loading} />
     </div>
   );
 }

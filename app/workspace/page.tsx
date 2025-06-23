@@ -56,6 +56,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import BuddyfiLoading from "@/components/buddyfi-loading";
 
 // Mock data - will be replaced with real data from API
 const initialTeamMembers = [
@@ -273,7 +274,7 @@ const TeamDashboard = () => {
   const progressPercentage = Math.round((completedTasks / tasks.length) * 100);
 
   // Time remaining calculation
-  const hackathonEndDate = new Date("May 30, 2025").getTime();
+  const hackathonEndDate = new Date("June 30, 2025").getTime();
   const currentDate = new Date().getTime();
   const timeRemaining = hackathonEndDate - currentDate;
   const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
@@ -355,354 +356,271 @@ const TeamDashboard = () => {
     <div>
       <Navbar />
       {isTrialExpired && (
-        <div className="fixed top-16 left-0 right-0 z-50 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 shadow-lg animate-in slide-in-from-top duration-300">
-          <div className="container mx-auto flex flex-col gap-4 md:flex-row gap-1 items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <AlertCircle className="h-5 w-5" />
-              <span>Your {TRIAL_DAYS}-day trial has ended. Upgrade now to continue accessing all features.</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button 
-                onClick={handleUpgrade}
-                className="bg-white text-purple-600 hover:bg-gray-100"
-              >
-                Upgrade Now
-              </Button>
-              <button 
-                onClick={handleNotificationClose}
-                className="text-white hover:text-gray-200"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
+        <TrialExpirationModal
+          onClose={handleNotificationClose}
+          onUpgrade={handleUpgrade}
+          trialDays={TRIAL_DAYS}
+        />
       )}
       <div className={`min-h-screen pt-16 pb-24 md:pb-16 bg-black bg-[radial-gradient(ellipse_at_top_right,rgba(120,0,255,0.15),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(0,150,255,0.1),transparent_50%)] ${isTrialExpired ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-7xl mx-auto">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-              <div>
-                <h1 className="md:text-3xl text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
-                  Team Workspace
-                </h1>
-                <p className="text-gray-400 md:text-md text-sm">
-                  Collaborate with your team on Project X
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="text-right">
-                  <div className="flex items-center mb-1">
-                    <Clock className="text-purple-400 h-4 w-4 mr-2" />
-                    <span className="md:text-sm text-xs text-gray-300">
-                      Submission Deadline
-                    </span>
-                  </div>
-                  <div className="md:text-xl font-mono font-bold text-white">
-                    {daysRemaining}d {hoursRemaining}h
-                  </div>
-                </div>
+            <BuddyfiLoading isLoading={isLoading}>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
-                  <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-                    <Rocket className="h-4 w-4 mr-2" />
-                    Submit Project
-                  </Button>
+                  <h1 className="md:text-3xl text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-500">
+                    Team Workspace
+                  </h1>
+                  <p className="text-gray-400 md:text-md text-sm">
+                    Collaborate with your team on Project X
+                  </p>
                 </div>
-              </div>
-            </div>
-
-            {/* Main content grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Team & Progress Section */}
-              <div className="space-y-6">
-                {/* Team card */}
-                <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)]">
-                  <CardHeader className="border-b border-white/5">
-                    <CardTitle className="flex items-center">
-                      <UserRound className="h-5 w-5 mr-2 text-purple-400" />
-                      Team Members
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    {isLoading ? (
-                      <div className="flex justify-center items-center p-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
-                      </div>
-                    ) : (
-                      <div className="divide-y divide-white/5">
-                        {teamMembers.map((member) => (
-                          <div
-                            key={member.id}
-                            className="flex items-center p-4 hover:bg-white/5"
-                          >
-                            <Avatar className="h-10 w-10 border border-white/10">
-                              <AvatarImage
-                                src={member.avatar || "./avatar.avif"}
-                                alt={member.name}
-                              />
-                              <AvatarFallback className="bg-purple-900 text-purple-200">
-                                {member.name.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="ml-3 flex-1">
-                              <div className="font-medium">{member.name}</div>
-                              <div className="text-sm text-gray-400">
-                                {member.role}
-                              </div>
-                            </div>
-                            <Badge
-                              variant="outline"
-                              className="border-purple-500/30 text-purple-400 text-xs"
-                            >
-                              {member.walletAddress}
-                            </Badge>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* Progress card */}
-                <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)]">
-                  <CardHeader className="border-b border-white/5">
-                    <CardTitle className="flex items-center">
-                      <CheckCircle className="h-5 w-5 mr-2 text-purple-400" />
-                      Project Progress
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-6">
-                    <div className="mb-2 flex justify-between items-center">
-                      <span className="text-sm text-gray-400">
-                        Overall Completion
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <div className="flex items-center mb-1">
+                      <Clock className="text-purple-400 h-4 w-4 mr-2" />
+                      <span className="md:text-sm text-xs text-gray-300">
+                        Submission Deadline
                       </span>
-                      <span className="font-bold">{progressPercentage}%</span>
                     </div>
-                    <Progress
-                      value={progressPercentage}
-                      className="h-2 bg-gray-800"
-                      indicatorClassName="bg-gradient-to-r from-purple-600 to-blue-600"
-                    />
-
-                    <div className="mt-6 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <div className="h-3 w-3 rounded-full bg-purple-500 mr-2"></div>
-                          <span className="text-sm">To Do</span>
-                        </div>
-                        <span className="text-sm font-medium">
-                          {tasks.filter((t) => t.status === "To Do").length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <div className="h-3 w-3 rounded-full bg-blue-500 mr-2"></div>
-                          <span className="text-sm">In Progress</span>
-                        </div>
-                        <span className="text-sm font-medium">
-                          {
-                            tasks.filter((t) => t.status === "In Progress")
-                              .length
-                          }
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <div className="h-3 w-3 rounded-full bg-orange-500 mr-2"></div>
-                          <span className="text-sm">Review</span>
-                        </div>
-                        <span className="text-sm font-medium">
-                          {tasks.filter((t) => t.status === "Review").length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <div className="h-3 w-3 rounded-full bg-green-500 mr-2"></div>
-                          <span className="text-sm">Completed</span>
-                        </div>
-                        <span className="text-sm font-medium">
-                          {tasks.filter((t) => t.status === "Completed").length}
-                        </span>
-                      </div>
+                    <div className="md:text-xl font-mono font-bold text-white">
+                      {daysRemaining}d {hoursRemaining}h
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* Links & Resources */}
-                <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)]">
-                  <CardHeader className="border-b border-white/5">
-                    <CardTitle className="flex items-center">
-                      <Code className="h-5 w-5 mr-2 text-purple-400" />
-                      Project Resources
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-6">
-                    <div className="space-y-4">
-                      <a
-                        href="/github"
-                        className="flex items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-                      >
-                        <Github className="h-5 w-5 mr-3 text-white" />
-                        <div className="flex-1">
-                          <div className="font-medium">GitHub Repository</div>
-                          <div className="text-sm text-gray-400">
-                            github.com/buddyfi/projectX
-                          </div>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400" />
-                      </a>
-
-                      <a
-                        href="/guidelines"
-                        className="flex items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-                      >
-                        <Award className="h-5 w-5 mr-3 text-white" />
-                        <div className="flex-1">
-                          <div className="font-medium">
-                            Hackathon Guidelines
-                          </div>
-                          <div className="text-sm text-gray-400">
-                            Submission requirements & judging criteria
-                          </div>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400" />
-                      </a>
-
-                      <a
-                        href="/docs"
-                        className="flex items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-                      >
-                        <AlertCircle className="h-5 w-5 mr-3 text-white" />
-                        <div className="flex-1">
-                          <div className="font-medium">
-                            Technical Documentation
-                          </div>
-                          <div className="text-sm text-gray-400">
-                            API specs & technical architecture
-                          </div>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400" />
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Tasks Section */}
-              <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] lg:col-span-2">
-                <CardHeader className="border-b border-white/5">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center">
-                      <ClipboardList className="h-5 w-5 mr-2 text-purple-400" />
-                      Tasks
-                    </CardTitle>
-                    <Button
-                      size="sm"
-                      className="bg-purple-600 hover:bg-purple-700 cursor-pointer"
-                      onClick={() => setIsAddTaskModalOpen(true)}
-                    >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add Task
+                  </div>
+                  <div>
+                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                      <Rocket className="h-4 w-4 mr-2" />
+                      Submit Project
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <Tabs defaultValue="all" className="w-full">
-                    <div className="border-b border-white/5">
-                      <TabsList className="bg-transparent h-12 px-4">
-                        <TabsTrigger
-                          value="all"
-                          className="data-[state=active]:bg-white/10 data-[state=active]:shadow-none rounded-md"
-                        >
-                          All Tasks
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="mine"
-                          className="data-[state=active]:bg-white/10 data-[state=active]:shadow-none rounded-md"
-                        >
-                          My Tasks
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="upcoming"
-                          className="data-[state=active]:bg-white/10 data-[state=active]:shadow-none rounded-md"
-                        >
-                          Upcoming
-                        </TabsTrigger>
-                      </TabsList>
-                    </div>
+                </div>
+              </div>
 
-                    <TabsContent value="all" className="m-0">
-                      <div className="divide-y divide-white/5">
-                        {tasks.map((task) => {
-                          const assignee = getTeamMemberById(task.assignedTo);
-                          return (
-                            <div key={task.id} className="p-4 hover:bg-white/5">
-                              <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center">
-                                  <div
-                                    className={`h-2 w-2 rounded-full mr-2 ${
-                                      task.status === "Completed"
-                                        ? "bg-green-500"
-                                        : task.status === "In Progress"
-                                        ? "bg-blue-500"
-                                        : task.status === "Review"
-                                        ? "bg-orange-500"
-                                        : "bg-purple-500"
-                                    }`}
-                                  ></div>
-                                  <h3 className="font-medium">{task.title}</h3>
-                                </div>
-                                <Badge
-                                  variant="outline"
-                                  className={`text-xs ${
-                                    task.status === "Completed"
-                                      ? "border-green-500/30 text-green-400"
-                                      : task.status === "In Progress"
-                                      ? "border-blue-500/30 text-blue-400"
-                                      : task.status === "Review"
-                                      ? "border-orange-500/30 text-orange-400"
-                                      : "border-purple-500/30 text-purple-400"
-                                  }`}
-                                >
-                                  {task.status}
-                                </Badge>
-                              </div>
-                              <div className="flex items-center justify-between text-sm">
-                                <div className="flex items-center text-gray-400">
-                                  <Avatar className="h-6 w-6 mr-2">
-                                    <AvatarImage
-                                      src={assignee?.avatar || "./avatar.avif"}
-                                      alt={assignee?.name}
-                                    />
-                                    <AvatarFallback className="bg-purple-900 text-purple-200 text-xs">
-                                      {assignee?.name.charAt(0)}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <span>{assignee?.name}</span>
-                                </div>
-                                <div className="flex items-center text-gray-400">
-                                  <Calendar className="h-3 w-3 mr-1" />
-                                  <span>{task.dueDate}</span>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Team & Progress Section */}
+                <div className="space-y-6">
+                  {/* Team card */}
+                  <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)]">
+                    <CardHeader className="border-b border-white/5">
+                      <CardTitle className="flex items-center">
+                        <UserRound className="h-5 w-5 mr-2 text-purple-400" />
+                        Team Members
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      {isLoading ? (
+                        <div className="flex justify-center items-center p-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-white/5">
+                          {teamMembers.map((member) => (
+                            <div
+                              key={member.id}
+                              className="flex items-center p-4 hover:bg-white/5"
+                            >
+                              <Avatar className="h-10 w-10 border border-white/10">
+                                <AvatarImage
+                                  src={member.avatar || "./avatar.avif"}
+                                  alt={member.name}
+                                />
+                                <AvatarFallback className="bg-purple-900 text-purple-200">
+                                  {member.name.charAt(0)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="ml-3 flex-1">
+                                <div className="font-medium">{member.name}</div>
+                                <div className="text-sm text-gray-400">
+                                  {member.role}
                                 </div>
                               </div>
+                              <Badge
+                                variant="outline"
+                                className="border-purple-500/30 text-purple-400 text-xs"
+                              >
+                                {member.walletAddress}
+                              </Badge>
                             </div>
-                          );
-                        })}
-                      </div>
-                    </TabsContent>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
 
-                    <TabsContent value="mine" className="m-0">
-                      <div className="divide-y divide-white/5">
-                        {tasks
-                          .filter((task) => task.assignedTo === CURRENT_USER_ID)
-                          .map((task) => {
+                  {/* Progress card */}
+                  <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)]">
+                    <CardHeader className="border-b border-white/5">
+                      <CardTitle className="flex items-center">
+                        <CheckCircle className="h-5 w-5 mr-2 text-purple-400" />
+                        Project Progress
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6">
+                      <div className="mb-2 flex justify-between items-center">
+                        <span className="text-sm text-gray-400">
+                          Overall Completion
+                        </span>
+                        <span className="font-bold">{progressPercentage}%</span>
+                      </div>
+                      <Progress
+                        value={progressPercentage}
+                        className="h-2 bg-gray-800"
+                        indicatorClassName="bg-gradient-to-r from-purple-600 to-blue-600"
+                      />
+
+                      <div className="mt-6 space-y-2">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center">
+                            <div className="h-3 w-3 rounded-full bg-purple-500 mr-2"></div>
+                            <span className="text-sm">To Do</span>
+                          </div>
+                          <span className="text-sm font-medium">
+                            {tasks.filter((t) => t.status === "To Do").length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center">
+                            <div className="h-3 w-3 rounded-full bg-blue-500 mr-2"></div>
+                            <span className="text-sm">In Progress</span>
+                          </div>
+                          <span className="text-sm font-medium">
+                            {
+                              tasks.filter((t) => t.status === "In Progress")
+                                .length
+                          }
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center">
+                            <div className="h-3 w-3 rounded-full bg-orange-500 mr-2"></div>
+                            <span className="text-sm">Review</span>
+                          </div>
+                          <span className="text-sm font-medium">
+                            {tasks.filter((t) => t.status === "Review").length}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center">
+                            <div className="h-3 w-3 rounded-full bg-green-500 mr-2"></div>
+                            <span className="text-sm">Completed</span>
+                          </div>
+                          <span className="text-sm font-medium">
+                            {tasks.filter((t) => t.status === "Completed").length}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Links & Resources */}
+                  <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)]">
+                    <CardHeader className="border-b border-white/5">
+                      <CardTitle className="flex items-center">
+                        <Code className="h-5 w-5 mr-2 text-purple-400" />
+                        Project Resources
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6">
+                      <div className="space-y-4">
+                        <a
+                          href="/github"
+                          className="flex items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                        >
+                          <Github className="h-5 w-5 mr-3 text-white" />
+                          <div className="flex-1">
+                            <div className="font-medium">GitHub Repository</div>
+                            <div className="text-sm text-gray-400">
+                              github.com/buddyfi/projectX
+                            </div>
+                          </div>
+                          <ArrowRight className="h-4 w-4 text-gray-400" />
+                        </a>
+
+                        <a
+                          href="/guidelines"
+                          className="flex items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                        >
+                          <Award className="h-5 w-5 mr-3 text-white" />
+                          <div className="flex-1">
+                            <div className="font-medium">
+                              Hackathon Guidelines
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              Submission requirements & judging criteria
+                            </div>
+                          </div>
+                          <ArrowRight className="h-4 w-4 text-gray-400" />
+                        </a>
+
+                        <a
+                          href="/docs"
+                          className="flex items-center p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                        >
+                          <AlertCircle className="h-5 w-5 mr-3 text-white" />
+                          <div className="flex-1">
+                            <div className="font-medium">
+                              Technical Documentation
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              API specs & technical architecture
+                            </div>
+                          </div>
+                          <ArrowRight className="h-4 w-4 text-gray-400" />
+                        </a>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Tasks Section */}
+                <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] lg:col-span-2">
+                  <CardHeader className="border-b border-white/5">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center">
+                        <ClipboardList className="h-5 w-5 mr-2 text-purple-400" />
+                        Tasks
+                      </CardTitle>
+                      <Button
+                        size="sm"
+                        className="bg-purple-600 hover:bg-purple-700 cursor-pointer"
+                        onClick={() => setIsAddTaskModalOpen(true)}
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add Task
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <Tabs defaultValue="all" className="w-full">
+                      <div className="border-b border-white/5">
+                        <TabsList className="bg-transparent h-12 px-4">
+                          <TabsTrigger
+                            value="all"
+                            className="data-[state=active]:bg-white/10 data-[state=active]:shadow-none rounded-md"
+                          >
+                            All Tasks
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="mine"
+                            className="data-[state=active]:bg-white/10 data-[state=active]:shadow-none rounded-md"
+                          >
+                            My Tasks
+                          </TabsTrigger>
+                          <TabsTrigger
+                            value="upcoming"
+                            className="data-[state=active]:bg-white/10 data-[state=active]:shadow-none rounded-md"
+                          >
+                            Upcoming
+                          </TabsTrigger>
+                        </TabsList>
+                      </div>
+
+                      <TabsContent value="all" className="m-0">
+                        <div className="divide-y divide-white/5">
+                          {tasks.map((task) => {
                             const assignee = getTeamMemberById(task.assignedTo);
                             return (
-                              <div
-                                key={task.id}
-                                className="p-4 hover:bg-white/5"
-                              >
+                              <div key={task.id} className="p-4 hover:bg-white/5">
                                 <div className="flex items-center justify-between mb-2">
                                   <div className="flex items-center">
                                     <div
@@ -716,9 +634,7 @@ const TeamDashboard = () => {
                                           : "bg-purple-500"
                                       }`}
                                     ></div>
-                                    <h3 className="font-medium">
-                                      {task.title}
-                                    </h3>
+                                    <h3 className="font-medium">{task.title}</h3>
                                   </div>
                                   <Badge
                                     variant="outline"
@@ -739,9 +655,7 @@ const TeamDashboard = () => {
                                   <div className="flex items-center text-gray-400">
                                     <Avatar className="h-6 w-6 mr-2">
                                       <AvatarImage
-                                        src={
-                                          assignee?.avatar || "./avatar.avif"
-                                        }
+                                        src={assignee?.avatar || "./avatar.avif"}
                                         alt={assignee?.name}
                                       />
                                       <AvatarFallback className="bg-purple-900 text-purple-200 text-xs">
@@ -758,169 +672,239 @@ const TeamDashboard = () => {
                               </div>
                             );
                           })}
-                        {tasks.filter((task) => task.assignedTo === CURRENT_USER_ID)
-                          .length === 0 && (
-                          <div className="p-8 text-center text-gray-400">
-                            <ClipboardList className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                            <p>You don&apos;t have any assigned tasks yet</p>
-                          </div>
-                        )}
-                      </div>
-                    </TabsContent>
+                        </div>
+                      </TabsContent>
 
-                    <TabsContent value="upcoming" className="m-0">
-                      {/* Simplified for the demo */}
-                      <div className="divide-y divide-white/5">
-                        {tasks
-                          .filter((task) => task.status !== "Completed")
-                          .map((task) => {
-                            const assignee = getTeamMemberById(task.assignedTo);
-                            return (
-                              <div
-                                key={task.id}
-                                className="p-4 hover:bg-white/5"
-                              >
-                                <div className="flex items-center justify-between mb-2">
-                                  <div className="flex items-center">
-                                    <div
-                                      className={`h-2 w-2 rounded-full mr-2 ${
-                                        task.status === "In Progress"
-                                          ? "bg-blue-500"
+                      <TabsContent value="mine" className="m-0">
+                        <div className="divide-y divide-white/5">
+                          {tasks
+                            .filter((task) => task.assignedTo === CURRENT_USER_ID)
+                            .map((task) => {
+                              const assignee = getTeamMemberById(task.assignedTo);
+                              return (
+                                <div
+                                  key={task.id}
+                                  className="p-4 hover:bg-white/5"
+                                >
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center">
+                                      <div
+                                        className={`h-2 w-2 rounded-full mr-2 ${
+                                          task.status === "Completed"
+                                            ? "bg-green-500"
+                                            : task.status === "In Progress"
+                                            ? "bg-blue-500"
+                                            : task.status === "Review"
+                                            ? "bg-orange-500"
+                                            : "bg-purple-500"
+                                        }`}
+                                      ></div>
+                                      <h3 className="font-medium">
+                                        {task.title}
+                                      </h3>
+                                    </div>
+                                    <Badge
+                                      variant="outline"
+                                      className={`text-xs ${
+                                        task.status === "Completed"
+                                          ? "border-green-500/30 text-green-400"
+                                          : task.status === "In Progress"
+                                          ? "border-blue-500/30 text-blue-400"
                                           : task.status === "Review"
-                                          ? "bg-orange-500"
-                                          : "bg-purple-500"
+                                          ? "border-orange-500/30 text-orange-400"
+                                          : "border-purple-500/30 text-purple-400"
                                       }`}
-                                    ></div>
-                                    <h3 className="font-medium">
-                                      {task.title}
-                                    </h3>
+                                    >
+                                      {task.status}
+                                    </Badge>
                                   </div>
-                                  <Badge
-                                    variant="outline"
-                                    className={`text-xs ${
-                                      task.status === "In Progress"
-                                        ? "border-blue-500/30 text-blue-400"
-                                        : task.status === "Review"
-                                        ? "border-orange-500/30 text-orange-400"
-                                        : "border-purple-500/30 text-purple-400"
-                                    }`}
-                                  >
-                                    {task.status}
-                                  </Badge>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                  <div className="flex items-center text-gray-400">
-                                    <Avatar className="h-6 w-6 mr-2">
-                                      <AvatarImage
-                                        src={
-                                          assignee?.avatar || "./avatar.avif"
-                                        }
-                                        alt={assignee?.name}
-                                      />
-                                      <AvatarFallback className="bg-purple-900 text-purple-200 text-xs">
-                                        {assignee?.name.charAt(0)}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <span>{assignee?.name}</span>
-                                  </div>
-                                  <div className="flex items-center text-gray-400">
-                                    <Calendar className="h-3 w-3 mr-1" />
-                                    <span>{task.dueDate}</span>
+                                  <div className="flex items-center justify-between text-sm">
+                                    <div className="flex items-center text-gray-400">
+                                      <Avatar className="h-6 w-6 mr-2">
+                                        <AvatarImage
+                                          src={
+                                            assignee?.avatar || "./avatar.avif"
+                                          }
+                                          alt={assignee?.name}
+                                        />
+                                        <AvatarFallback className="bg-purple-900 text-purple-200 text-xs">
+                                          {assignee?.name.charAt(0)}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <span>{assignee?.name}</span>
+                                    </div>
+                                    <div className="flex items-center text-gray-400">
+                                      <Calendar className="h-3 w-3 mr-1" />
+                                      <span>{task.dueDate}</span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
+                              );
+                            })}
+                          {tasks.filter((task) => task.assignedTo === CURRENT_USER_ID)
+                            .length === 0 && (
+                            <div className="p-8 text-center text-gray-400">
+                              <ClipboardList className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                              <p>You don&apos;t have any assigned tasks yet</p>
+                            </div>
+                          )}
+                        </div>
+                      </TabsContent>
 
-              {/* Team Chat */}
-              <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] lg:col-span-3">
-                <CardHeader className="border-b border-white/5">
-                  <CardTitle className="flex items-center">
-                    <MessageSquare className="h-5 w-5 mr-2 text-purple-400" />
-                    Team Chat
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="h-64 overflow-y-auto p-4 space-y-4">
-                    {messages.map((message) => {
-                      const sender = getTeamMemberById(message.sender);
-                      const isCurrentUser = message.sender === "4";
+                      <TabsContent value="upcoming" className="m-0">
+                        {/* Simplified for the demo */}
+                        <div className="divide-y divide-white/5">
+                          {tasks
+                            .filter((task) => task.status !== "Completed")
+                            .map((task) => {
+                              const assignee = getTeamMemberById(task.assignedTo);
+                              return (
+                                <div
+                                  key={task.id}
+                                  className="p-4 hover:bg-white/5"
+                                >
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center">
+                                      <div
+                                        className={`h-2 w-2 rounded-full mr-2 ${
+                                          task.status === "In Progress"
+                                            ? "bg-blue-500"
+                                            : task.status === "Review"
+                                            ? "bg-orange-500"
+                                            : "bg-purple-500"
+                                        }`}
+                                      ></div>
+                                      <h3 className="font-medium">
+                                        {task.title}
+                                      </h3>
+                                    </div>
+                                    <Badge
+                                      variant="outline"
+                                      className={`text-xs ${
+                                        task.status === "In Progress"
+                                          ? "border-blue-500/30 text-blue-400"
+                                          : task.status === "Review"
+                                          ? "border-orange-500/30 text-orange-400"
+                                          : "border-purple-500/30 text-purple-400"
+                                      }`}
+                                    >
+                                      {task.status}
+                                    </Badge>
+                                  </div>
+                                  <div className="flex items-center justify-between text-sm">
+                                    <div className="flex items-center text-gray-400">
+                                      <Avatar className="h-6 w-6 mr-2">
+                                        <AvatarImage
+                                          src={
+                                            assignee?.avatar || "./avatar.avif"
+                                          }
+                                          alt={assignee?.name}
+                                        />
+                                        <AvatarFallback className="bg-purple-900 text-purple-200 text-xs">
+                                          {assignee?.name.charAt(0)}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <span>{assignee?.name}</span>
+                                    </div>
+                                    <div className="flex items-center text-gray-400">
+                                      <Calendar className="h-3 w-3 mr-1" />
+                                      <span>{task.dueDate}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
 
-                      return (
-                        <div
-                          key={message.id}
-                          className={`flex ${
-                            isCurrentUser ? "justify-end" : "justify-start"
-                          }`}
-                        >
+                {/* Team Chat */}
+                <Card className="backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] lg:col-span-3">
+                  <CardHeader className="border-b border-white/5">
+                    <CardTitle className="flex items-center">
+                      <MessageSquare className="h-5 w-5 mr-2 text-purple-400" />
+                      Team Chat
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="h-64 overflow-y-auto p-4 space-y-4">
+                      {messages.map((message) => {
+                        const sender = getTeamMemberById(message.sender);
+                        const isCurrentUser = message.sender === "4";
+
+                        return (
                           <div
-                            className={`flex max-w-md ${
-                              isCurrentUser ? "flex-row-reverse" : "flex-row"
+                            key={message.id}
+                            className={`flex ${
+                              isCurrentUser ? "justify-end" : "justify-start"
                             }`}
                           >
-                            <Avatar
-                              className={`h-8 w-8 ${
-                                isCurrentUser ? "ml-2" : "mr-2"
+                            <div
+                              className={`flex max-w-md ${
+                                isCurrentUser ? "flex-row-reverse" : "flex-row"
                               }`}
                             >
-                              <AvatarImage
-                                src={sender?.avatar || "./avatar.avif"}
-                                alt={sender?.name}
-                              />
-                              <AvatarFallback className="bg-purple-900 text-purple-200 text-xs">
-                                {sender?.name.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div
-                                className={`px-4 py-2 rounded-2xl text-sm ${
-                                  isCurrentUser
-                                    ? "bg-purple-600 text-white rounded-tr-none"
-                                    : "bg-white/10 rounded-tl-none"
+                              <Avatar
+                                className={`h-8 w-8 ${
+                                  isCurrentUser ? "ml-2" : "mr-2"
                                 }`}
                               >
-                                {message.text}
-                              </div>
-                              <div
-                                className={`text-xs text-gray-400 mt-1 ${
-                                  isCurrentUser ? "text-right" : "text-left"
-                                }`}
-                              >
-                                {sender?.name} • {message.timestamp}
+                                <AvatarImage
+                                  src={sender?.avatar || "./avatar.avif"}
+                                  alt={sender?.name}
+                                />
+                                <AvatarFallback className="bg-purple-900 text-purple-200 text-xs">
+                                  {sender?.name.charAt(0)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div
+                                  className={`px-4 py-2 rounded-2xl text-sm ${
+                                    isCurrentUser
+                                      ? "bg-purple-600 text-white rounded-tr-none"
+                                      : "bg-white/10 rounded-tl-none"
+                                  }`}
+                                >
+                                  {message.text}
+                                </div>
+                                <div
+                                  className={`text-xs text-gray-400 mt-1 ${
+                                    isCurrentUser ? "text-right" : "text-left"
+                                  }`}
+                                >
+                                  {sender?.name} • {message.timestamp}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="p-4 border-t border-white/5">
-                    <div className="flex items-center">
-                      <Input
-                        placeholder="Type your message..."
-                        className="bg-white/5 border-white/10 focus:border-purple-500 focus:ring-purple-500"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyPress={(e) =>
-                          e.key === "Enter" && handleSendMessage()
-                        }
-                      />
-                      <Button
-                        onClick={handleSendMessage}
-                        className="ml-2 px-3 bg-purple-600 hover:bg-purple-700"
-                      >
-                        <Send className="h-4 w-4" />
-                      </Button>
+                        );
+                      })}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                    <div className="p-4 border-t border-white/5">
+                      <div className="flex items-center">
+                        <Input
+                          placeholder="Type your message..."
+                          className="bg-white/5 border-white/10 focus:border-purple-500 focus:ring-purple-500"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && handleSendMessage()
+                          }
+                        />
+                        <Button
+                          onClick={handleSendMessage}
+                          className="ml-2 px-3 bg-purple-600 hover:bg-purple-700"
+                        >
+                          <Send className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </BuddyfiLoading>
           </div>
         </div>
       </div>

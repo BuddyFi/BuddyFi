@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
@@ -16,10 +17,14 @@ import IntroSection from "@/components/data/heroSection";
 export default function Home() {
   const { publicKey } = useWallet();
   const [hasProfile, setHasProfile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkProfile = async () => {
-      if (!publicKey) return;
+      if (!publicKey) {
+        setIsLoading(false);
+        return;
+      }
       
       try {
         const response = await fetch(`/api/data?walletAddress=${publicKey.toString()}`);
@@ -31,6 +36,8 @@ export default function Home() {
       } catch (error) {
         console.error('Error checking profile:', error);
         setHasProfile(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -45,20 +52,21 @@ export default function Home() {
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <IntroSection />
 
-        {!publicKey ? (
-          <div>
-            <ProblemCards />
-            <Features />
-            <Steps />
-            <Roadmap />
-            <Testimonials />
-          </div>
-        ) : (
-          <div>
-            <IsFirstTime />
-          </div>
-        )}
         
+          {!publicKey ? (
+            <div>
+              <ProblemCards />
+              <Features />
+              <Steps />
+              <Roadmap />
+              <Testimonials />
+            </div>
+          ) : (
+            <div>
+              <IsFirstTime />
+            </div>
+          )}
+  
 
         <section className="py-16 container px-4 mx-auto">
           <div className="relative glass-morphism rounded-xl overflow-hidden">

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import Link from "next/link";
+import BuddyfiLoading from "@/components/buddyfi-loading";
 
 const mockProfiles: UserProfile[] = [
   {
@@ -328,59 +329,25 @@ const Page = () => {
               )}
             </div>
 
-            {!publicKey ? (
-              <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
-                <h2 className="text-xl font-bold mb-4">
-                  Connect Wallet to Start
-                </h2>
-                <p className="text-gray-300 mb-6">
-                  Connect your wallet to start discovering potential teammates
-                </p>
-                <div className="flex justify-center">
-                  <ConnectWalletButton />
+            <BuddyfiLoading isLoading={isLoading}>
+              {!publicKey ? (
+                <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
+                  <h2 className="text-xl font-bold mb-4">
+                    Connect Wallet to Start
+                  </h2>
+                  <p className="text-gray-300 mb-6">
+                    Connect your wallet to start discovering potential teammates
+                  </p>
+                  <div className="flex justify-center">
+                    <ConnectWalletButton />
+                  </div>
                 </div>
-              </div>
-            ) : isLoading ? (
-              <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
-                <div className="flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 border-4 border-purple-300 border-dashed rounded-full animate-spin mb-4" />
-                  <p className="text-gray-300">Loading profiles...</p>
-                </div>
-              </div>
-            ) : error ? (
-              <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
-                <div className="flex flex-col items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-12 w-12 text-red-500 mb-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
-                  <h2 className="text-xl font-bold mb-2">Error Loading Profiles</h2>
-                  <p className="text-gray-300 mb-4">{error}</p>
-                  <Button
-                    onClick={() => window.location.reload()}
-                    className="bg-purple-300 hover:bg-dark-purple-300"
-                  >
-                    Try Again
-                  </Button>
-                </div>
-              </div>
-            ) : isFinished ? (
-              <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
-                <div className="mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-300/20 text-purple-300 mb-4">
+              ) : error ? (
+                <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
+                  <div className="flex flex-col items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-8 w-8"
+                      className="h-12 w-12 text-red-500 mb-4"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -388,122 +355,151 @@ const Page = () => {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
+                        strokeWidth={1.5}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                       />
                     </svg>
-                  </div>
-                  <h2 className="text-xl font-bold mb-2">
-                    You&apos;re all caught up!
-                  </h2>
-                  <p className="text-gray-300 mb-6">
-                    Check back later for new profiles or view your matches
-                  </p>
-                </div>
-                <div className="flex flex-col space-y-3">
-                  <Button
-                    onClick={resetProfiles}
-                    className="bg-purple-300 hover:bg-dark-purple-300 cursor-pointer"
-                  >
-                    Refresh Profiles
-                  </Button>
-                  <Link href="/matches">
+                    <h2 className="text-xl font-bold mb-2">Error Loading Profiles</h2>
+                    <p className="text-gray-300 mb-4">{error}</p>
                     <Button
-                      variant="outline"
-                      className="border-purple-300/50 text-purple-300 cursor-pointer w-full"
+                      onClick={() => window.location.reload()}
+                      className="bg-purple-300 hover:bg-dark-purple-300"
                     >
-                      View Matches
+                      Try Again
                     </Button>
-                  </Link>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div
-                ref={cardRef}
-                className={`relative touch-none ${
-                  isAnimating === "left"
-                    ? "animate-card-slide-out-left"
-                    : isAnimating === "right"
-                    ? "animate-card-slide-out-right"
-                    : "animate-card-enter"
-                }`}
-                style={getCardStyle()}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                onMouseDown={handleMouseDown}
-              >
-                <UserCard
-                  user={currentProfile}
-                  variant="swipe"
-                  onLike={handleLike}
-                  onSkip={handleSkip}
-                />
-
-                {/* Like indicator */}
-                <div
-                  className={`absolute inset-0 bg-green-500/20 z-20 rounded-xl pointer-events-none transition-opacity duration-300 ${
-                    isAnimating === "right" || position.x > 50
-                      ? "opacity-" +
-                        Math.min(Math.abs(position.x) / 200, 0.5).toFixed(2)
-                      : "opacity-0"
-                  }`}
-                >
-                  <div className="flex h-full items-center justify-center">
-                    <div className="bg-white/20 rounded-full p-4">
+              ) : isFinished ? (
+                <div className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
+                  <div className="mb-6">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-300/20 text-purple-300 mb-4">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-16 w-16 text-green-500"
+                        className="h-8 w-8"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        strokeWidth={1.5}
                       >
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
                         />
                       </svg>
                     </div>
+                    <h2 className="text-xl font-bold mb-2">
+                      You&apos;re all caught up!
+                    </h2>
+                    <p className="text-gray-300 mb-6">
+                      Check back later for new profiles or view your matches
+                    </p>
                   </div>
-                </div>
-
-                {/* Skip indicator */}
-                <div
-                  className={`absolute inset-0 bg-red-500/20 z-20 rounded-xl pointer-events-none transition-opacity duration-300 ${
-                    isAnimating === "left" || position.x < -50
-                      ? "opacity-" +
-                        Math.min(Math.abs(position.x) / 200, 0.5).toFixed(2)
-                      : "opacity-0"
-                  }`}
-                >
-                  <div className="flex h-full items-center justify-center">
-                    <div className="bg-white/20 rounded-full p-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-16 w-16 text-red-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
+                  <div className="flex flex-col space-y-3">
+                    <Button
+                      onClick={resetProfiles}
+                      className="bg-purple-300 hover:bg-dark-purple-300 cursor-pointer"
+                    >
+                      Refresh Profiles
+                    </Button>
+                    <Link href="/matches">
+                      <Button
+                        variant="outline"
+                        className="border-purple-300/50 text-purple-300 cursor-pointer w-full"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M18 6 6 18"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m6 6 12 12"
-                        />
-                      </svg>
+                        View Matches
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  ref={cardRef}
+                  className={`relative touch-none ${
+                    isAnimating === "left"
+                      ? "animate-card-slide-out-left"
+                      : isAnimating === "right"
+                      ? "animate-card-slide-out-right"
+                      : "animate-card-enter"
+                  }`}
+                  style={getCardStyle()}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onMouseDown={handleMouseDown}
+                >
+                  <UserCard
+                    user={currentProfile}
+                    variant="swipe"
+                    onLike={handleLike}
+                    onSkip={handleSkip}
+                  />
+
+                  {/* Like indicator */}
+                  <div
+                    className={`absolute inset-0 bg-green-500/20 z-20 rounded-xl pointer-events-none transition-opacity duration-300 ${
+                      isAnimating === "right" || position.x > 50
+                        ? "opacity-" +
+                          Math.min(Math.abs(position.x) / 200, 0.5).toFixed(2)
+                        : "opacity-0"
+                    }`}
+                  >
+                    <div className="flex h-full items-center justify-center">
+                      <div className="bg-white/20 rounded-full p-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-16 w-16 text-green-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Skip indicator */}
+                  <div
+                    className={`absolute inset-0 bg-red-500/20 z-20 rounded-xl pointer-events-none transition-opacity duration-300 ${
+                      isAnimating === "left" || position.x < -50
+                        ? "opacity-" +
+                          Math.min(Math.abs(position.x) / 200, 0.5).toFixed(2)
+                        : "opacity-0"
+                    }`}
+                  >
+                    <div className="flex h-full items-center justify-center">
+                      <div className="bg-white/20 rounded-full p-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-16 w-16 text-red-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M18 6 6 18"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m6 6 12 12"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </BuddyfiLoading>
 
             <div className="mt-8 backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-6">
               <h3 className="font-medium mb-4">How It Works</h3>

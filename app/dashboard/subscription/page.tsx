@@ -8,11 +8,14 @@ import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { SolanaProvider } from "@/context/wallet-provider"
 import { SubscriptionProvider } from "@/context/subscription-context"
+import BuddyfiLoading from "@/components/buddyfi-loading"
+import { useState, useEffect } from "react"
 
 function SubscriptionDashboardContent() {
   const { subscription } = useSubscription()
 //   const { publicKey } = useWallet()
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
 
 //   useEffect(() => {
 //     if (!publicKey) {
@@ -20,25 +23,35 @@ function SubscriptionDashboardContent() {
 //     }
 //   }, [publicKey, router])
 
+  // Simulate loading state for subscription data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [])
+
   if (!subscription) {
     return (
       <div className="bg-gray-950 text-white">
         <Navbar />
         <main className="container mx-auto px-4 py-20">
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle>No Active Subscription</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4">You don&apos;t have an active subscription.</p>
-              <Button
-                onClick={() => router.push("/payment")}
-                className="bg-gradient-to-r from-purple-600 to-green-500 hover:from-purple-700 hover:to-green-600"
-              >
-                View Plans
-              </Button>
-            </CardContent>
-          </Card>
+          <BuddyfiLoading isLoading={isLoading}>
+            <Card className="max-w-2xl mx-auto">
+              <CardHeader>
+                <CardTitle>No Active Subscription</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4">You don&apos;t have an active subscription.</p>
+                <Button
+                  onClick={() => router.push("/payment")}
+                  className="bg-gradient-to-r from-purple-600 to-green-500 hover:from-purple-700 hover:to-green-600"
+                >
+                  View Plans
+                </Button>
+              </CardContent>
+            </Card>
+          </BuddyfiLoading>
         </main>
         <Footer />
       </div>
@@ -59,43 +72,45 @@ function SubscriptionDashboardContent() {
     <div className="bg-gray-900 h-screen">
       <Navbar />
       <main className="container mx-auto px-4 py-[12rem]">
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Subscription Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Current Plan</h3>
-              <p className="text-gray-400">{subscription.planName}</p>
-            </div>
+        <BuddyfiLoading isLoading={isLoading}>
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>Subscription Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Current Plan</h3>
+                <p className="text-gray-400">{subscription.planName}</p>
+              </div>
 
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Wallet Address</h3>
-              <p className="text-gray-400 font-mono break-all">
-                {subscription.walletAddress}
-              </p>
-            </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Wallet Address</h3>
+                <p className="text-gray-400 font-mono break-all">
+                  {subscription.walletAddress}
+                </p>
+              </div>
 
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Subscription Period</h3>
-              <p className="text-gray-400">
-                Start Date: {formatDate(subscription.startDate)}
-              </p>
-              <p className="text-gray-400">
-                Expiry Date: {formatDate(subscription.expiryDate)}
-              </p>
-            </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Subscription Period</h3>
+                <p className="text-gray-400">
+                  Start Date: {formatDate(subscription.startDate)}
+                </p>
+                <p className="text-gray-400">
+                  Expiry Date: {formatDate(subscription.expiryDate)}
+                </p>
+              </div>
 
-            <div className="pt-4 flex gap-4">
-              <Button
-                onClick={() => router.push("/payment")}
-                className="bg-gradient-to-r from-purple-600 to-green-500 hover:from-purple-700 hover:to-green-600"
-              >
-                {isExpired ? "Renew Plan" : "Upgrade Plan"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="pt-4 flex gap-4">
+                <Button
+                  onClick={() => router.push("/payment")}
+                  className="bg-gradient-to-r from-purple-600 to-green-500 hover:from-purple-700 hover:to-green-600"
+                >
+                  {isExpired ? "Renew Plan" : "Upgrade Plan"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </BuddyfiLoading>
       </main>
       <Footer/>
     </div>

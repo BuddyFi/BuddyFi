@@ -16,6 +16,7 @@ import gsap from "gsap";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
+import BuddyfiLoading from "@/components/buddyfi-loading";
 
 type IpfsData = {
   name: string;
@@ -122,118 +123,120 @@ export default function AdminBuddyPage() {
       <Navbar />
       <div className="min-h-screen pt-16 pb-24 md:pb-16">
         <div className="container mx-auto px-4 py-8">
-          <div
-            ref={cardRef}
-            className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-6"
-          >
-            <h1 className="text-2xl font-bold mb-6">
-              Admin Dashboard - User Management
-            </h1>
+          <BuddyfiLoading isLoading={loading}>
+            <div
+              ref={cardRef}
+              className="backdrop-blur-xl bg-white/1 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-6"
+            >
+              <h1 className="text-2xl font-bold mb-6">
+                Admin Dashboard - User Management
+              </h1>
 
-            {users.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-400">No users found</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="px-4 py-3 text-left">User</th>
-                      <th className="px-4 py-3 text-left">Wallet</th>
-                      <th className="px-4 py-3 text-left">Skills</th>
-                      <th className="px-4 py-3 text-left">GitHub</th>
-                      <th className="px-4 py-3 text-left">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-white/10 hover:bg-white/5 cursor-pointer transition-colors"
-                        onClick={() => handleUserClick(user)}
-                      >
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            {user.userData.avatar ? (
-                              <img
-                                src={user.userData.avatar}
-                                alt={user.userData.name}
-                                className="w-8 h-8 rounded-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-8 h-8 rounded-full bg-buddyfi-blue/20 flex items-center justify-center">
-                                {user.userData.name.charAt(0)}
-                              </div>
-                            )}
-                            <span>{user.userData.name}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 font-mono text-sm text-gray-400">
-                          {user.userData.walletAddress ? (
-                            <>
-                              {user.userData.walletAddress.substring(0, 6)}...
-                              {user.userData.walletAddress.substring(
-                                user.userData.walletAddress.length - 4
+              {users.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-400">No users found</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="px-4 py-3 text-left">User</th>
+                        <th className="px-4 py-3 text-left">Wallet</th>
+                        <th className="px-4 py-3 text-left">Skills</th>
+                        <th className="px-4 py-3 text-left">GitHub</th>
+                        <th className="px-4 py-3 text-left">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user, index) => (
+                        <tr
+                          key={index}
+                          className="border-b border-white/10 hover:bg-white/5 cursor-pointer transition-colors"
+                          onClick={() => handleUserClick(user)}
+                        >
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              {user.userData.avatar ? (
+                                <img
+                                  src={user.userData.avatar}
+                                  alt={user.userData.name}
+                                  className="w-8 h-8 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-buddyfi-blue/20 flex items-center justify-center">
+                                  {user.userData.name.charAt(0)}
+                                </div>
                               )}
-                            </>
-                          ) : (
-                            "N/A"
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex flex-wrap gap-1">
-                            {Array.isArray(user.userData.skills) &&
-                            user.userData.skills.length > 0 ? (
+                              <span>{user.userData.name}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 font-mono text-sm text-gray-400">
+                            {user.userData.walletAddress ? (
                               <>
-                                {user.userData.skills
-                                  .slice(0, 3)
-                                  .map((skill, i) => (
-                                    <Badge
-                                      key={i}
-                                      className="bg-purple-300/20 text-white text-xs px-2"
-                                    >
-                                      {skill}
-                                    </Badge>
-                                  ))}
-                                {user.userData.skills.length > 3 && (
-                                  <Badge className="bg-gray-500/20 text-white text-xs px-2">
-                                    +{user.userData.skills.length - 3}
-                                  </Badge>
+                                {user.userData.walletAddress.substring(0, 6)}...
+                                {user.userData.walletAddress.substring(
+                                  user.userData.walletAddress.length - 4
                                 )}
                               </>
                             ) : (
-                              <span className="text-gray-400">
-                                No skills listed
-                              </span>
+                              "N/A"
                             )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-gray-400">
-                          {user.userData.social && user.userData.social.github
-                            ? user.userData.social.github
-                            : "—"}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-xs"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleUserClick(user);
-                            }}
-                          >
-                            View Details
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex flex-wrap gap-1">
+                              {Array.isArray(user.userData.skills) &&
+                              user.userData.skills.length > 0 ? (
+                                <>
+                                  {user.userData.skills
+                                    .slice(0, 3)
+                                    .map((skill, i) => (
+                                      <Badge
+                                        key={i}
+                                        className="bg-purple-300/20 text-white text-xs px-2"
+                                      >
+                                        {skill}
+                                      </Badge>
+                                    ))}
+                                  {user.userData.skills.length > 3 && (
+                                    <Badge className="bg-gray-500/20 text-white text-xs px-2">
+                                      +{user.userData.skills.length - 3}
+                                    </Badge>
+                                  )}
+                                </>
+                              ) : (
+                                <span className="text-gray-400">
+                                  No skills listed
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-gray-400">
+                            {user.userData.social && user.userData.social.github
+                              ? user.userData.social.github
+                              : "—"}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-xs"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUserClick(user);
+                              }}
+                            >
+                              View Details
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </BuddyfiLoading>
         </div>
 
         {/* User Profile Dialog */}

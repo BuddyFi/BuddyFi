@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import { useWallet } from "@solana/wallet-adapter-react";
+import BuddyfiLoading from "@/components/buddyfi-loading";
 
 interface PinataUser {
   userData: {
@@ -277,21 +278,42 @@ const Page = () => {
               <h1 className="text-3xl font-bold mb-4">Find Your Connections</h1>
             </div>
 
-            {!publicKey ? (
-              <div className="backdrop-blur-xl bg-white/2 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
-                <h2 className="text-xl font-bold mb-4">
-                  Connect Wallet to View
-                </h2>
-                <p className="text-gray-300 mb-6">
-                  Connect your wallet to see likes and matches
-                </p>
-                <div className="flex justify-center">
-                  <ConnectWalletButton />
+            <BuddyfiLoading isLoading={isLoading}>
+              {!publicKey ? (
+                <div className="backdrop-blur-xl bg-white/2 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
+                  <h2 className="text-xl font-bold mb-4">
+                    Connect Wallet to View
+                  </h2>
+                  <p className="text-gray-300 mb-6">
+                    Connect your wallet to see likes and matches
+                  </p>
+                  <div className="flex justify-center">
+                    <ConnectWalletButton />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              renderContent()
-            )}
+              ) : error ? (
+                <div className="backdrop-blur-xl bg-white/2 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)] rounded-xl p-8 text-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-12 w-12 mx-auto mb-4 text-red-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                  <h3 className="text-lg font-medium mb-2">Error Loading Profiles</h3>
+                  <p className="text-gray-400">{error}</p>
+                </div>
+              ) : (
+                renderContent()
+              )}
+            </BuddyfiLoading>
           </div>
         </div>
       </div>
