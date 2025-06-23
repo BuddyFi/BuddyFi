@@ -273,7 +273,7 @@ const TeamDashboard = () => {
   const progressPercentage = Math.round((completedTasks / tasks.length) * 100);
 
   // Time remaining calculation
-  const hackathonEndDate = new Date("May 30, 2025").getTime();
+  const hackathonEndDate = new Date("June 30, 2025").getTime();
   const currentDate = new Date().getTime();
   const timeRemaining = hackathonEndDate - currentDate;
   const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
