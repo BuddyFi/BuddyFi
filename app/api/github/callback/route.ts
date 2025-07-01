@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import axios from "axios";
-import { cookies } from "next/headers"; // ✅ Import this
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -42,16 +41,17 @@ export async function GET(request: Request) {
       created_at: user.created_at,
     };
 
-    // ✅ Set cookie correctly using cookies() API
-    (await
-          // ✅ Set cookie correctly using cookies() API
-          cookies()).set("githubUser", JSON.stringify(userData), {
+    // Set cookie using Response object for reliability
+    const response = NextResponse.redirect(new URL(`/profile`, request.url));
+    response.cookies.set("githubUser", JSON.stringify(userData), {
       httpOnly: false,
       secure: false,
       maxAge: 60 * 60, // 1 hour
+      path: "/",
+      sameSite: "lax",
     });
 
-    return NextResponse.redirect(new URL(`/profile`, request.url));
+    return response;
   } catch (err: any) {
     console.error("OAuth Error:", err.response?.data ?? err);
     return NextResponse.json({ error: "OAuth failed" }, { status: 500 });
