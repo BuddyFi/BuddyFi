@@ -51,7 +51,7 @@ export async function GET(request: Request) {
       maxAge: 60 * 60, // 1 hour
     });
 
-    return NextResponse.redirect(new URL(`/dashboard?${user.login}`, request.url));
+    return NextResponse.redirect(new URL(`/profile`, request.url));
   } catch (err: any) {
     console.error("OAuth Error:", err.response?.data ?? err);
     return NextResponse.json({ error: "OAuth failed" }, { status: 500 });
