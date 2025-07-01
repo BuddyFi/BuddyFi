@@ -4,18 +4,18 @@ Find your perfect teammate for hackathons or side projects
 
 **BuddyFi** is a Solana-based web platform that helps developers match with the perfect teammates for hackathons and side projects using **on-chain profiles**, **skill-based matching**, and a familiar **swipe-to-connect interface**.
 
-> 🚀 Built with Solana, IPFS, and Compressed NFTs to enable decentralized identity and team formation for the next generation of builders.
+> Built with Solana, IPFS, and Compressed NFTs to enable decentralized identity and team formation for the next generation of builders.
 
 ---
 
-## 🌟 Live Demo
+## Live Demo
 
 👉 [https://www.buddyfi.xyz](https://www.buddyfi.xyz)  
-🧪 Currently live on **Solana Devnet** (Mainnet launch Q3 2024)
+Currently live on **Solana Devnet**
 
 ---
 
-## 📌 Key Features
+## Key Features
 
 - 🔐 **Solana Wallet Login** – Seamless authentication using Phantom or any Solana wallet
 - 🧬 **Decentralized Profiles** – IPFS-stored metadata + on-chain hash for tamper-proof builder identity
@@ -26,30 +26,30 @@ Find your perfect teammate for hackathons or side projects
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
 | Category             | Stack                                                                 |
 |----------------------|-----------------------------------------------------------------------|
-| ⚙️ Framework         | Next.js 15+, TypeScript, TailwindCSS                                  |
-| 🔗 Blockchain        | Solana (Devnet), Anchor, Solana Pay                                   |
-| ☁️ Storage           | IPFS (via Web3.Storage), Arweave (future metadata snapshots)          |
-| 🧠 Smart Matching     | Custom logic for skill/tag-based pairing                              |
-| 🧩 NFT Integration    | Compressed NFTs (cNFTs) for badges and access tokens                  |
+| Framework         | Next.js 15+, TypeScript, TailwindCSS                                  |
+| Blockchain        | Solana (Devnet), Anchor, Solana Pay                                   |
+| Storage           | IPFS (via Web3.Storage), Arweave (future metadata snapshots)          |
+| Smart Matching     | Custom logic for skill/tag-based pairing                              |
+| NFT Integration    | Compressed NFTs (cNFTs) for badges and access tokens                  |
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 | Quarter       | Milestone                                  |
 |---------------|---------------------------------------------|
-| Q2 2024       | ✅ MVP on Solana Devnet (profiles, swipe, dashboard) |
-| Q3 2024       | 🚀 Mainnet launch + cNFT badges + mobile UX upgrade |
-| Q4 2024       | 🤝 Hackathon integrations + event calendar |
-| Q1 2025       | 🔓 Open source SDK + team creation tools   |
+| Q2 2025       | MVP on Solana Devnet (profiles, swipe, dashboard) |
+| Q3 2025       | Mainnet launch + cNFT badges + mobile UX upgrade |
+| Q4 2025       | Hackathon integrations + event calendar |
+| Q1 2025       | Open source SDK + team creation tools   |
 
 ---
 
-## 🧑‍💻 Local Development
+## Local Development
 
 ### Prerequisites
 
@@ -65,3 +65,4 @@ git clone https://github.com/your-org/buddyfi.git
 cd buddyfi
 npm install
 npm run dev
+```

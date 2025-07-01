@@ -6,13 +6,22 @@ import Navbar from "@/components/Navbar";
 import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import ProblemCards from "@/components/data/problemCards";
-import Features from "@/components/data/features";
-import Steps from "@/components/data/steps";
-import Roadmap from "@/components/data/roadmap";
-import Testimonials from "@/components/data/testimonials";
 import IsFirstTime from "@/components/data/isFirstTime";
-import IntroSection from "@/components/data/heroSection";
+// import IntroSection from "@/components/data/heroSection";
+import {
+  ArrowRight,
+  CheckCircle,
+  Clock,
+  Code2,
+  Coffee,
+  Github,
+  Heart,
+  Sparkles,
+  Trophy,
+  Users,
+  Zap,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { publicKey } = useWallet();
@@ -21,20 +30,19 @@ export default function Home() {
 
   useEffect(() => {
     const checkProfile = async () => {
-      if (!publicKey) {
-        setIsLoading(false);
-        return;
-      }
+      if (!publicKey) return;
       
       try {
-        const response = await fetch(`/api/data?walletAddress=${publicKey.toString()}`);
+        const response = await fetch(
+          `/api/data?walletAddress=${publicKey.toString()}`
+        );
         if (response.ok) {
           setHasProfile(true);
         } else {
           setHasProfile(false);
         }
       } catch (error) {
-        console.error('Error checking profile:', error);
+        console.error("Error checking profile:", error);
         setHasProfile(false);
       } finally {
         setIsLoading(false);

@@ -95,7 +95,7 @@ export default function ConnectWalletButton() {
             
             {/* Dropdown menu */}
             {showDropdown && (
-                <div className="absolute mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10 right-0">
+                <div className="absolute mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-100 right-0">
                     <ul className="py-1">
                         <li 
                             className="px-4 py-2 text-sm text-gray-100 hover:text-gray-400 duration-200 cursor-pointer"
