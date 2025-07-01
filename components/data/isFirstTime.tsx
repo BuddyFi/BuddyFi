@@ -64,10 +64,10 @@ export default function IsFirstTime(){
 
     return(
         <>
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-10">
             {/* First-time user profile completion */}
             {isFirstTime && (
-              <Card className="mb-6 border-primary/20 bg-primary/5">
+              <Card className="mb-6 bg-slate-900/60 backdrop-blur-xl border-2 border-slate-800/50">
                 <CardHeader>
                   <CardTitle>Complete Your Profile</CardTitle>
                   <CardDescription>
@@ -78,10 +78,11 @@ export default function IsFirstTime(){
                 <CardContent>
                   <div className="flex justify-center">
                     <Link href="/create">
-                    <Button>
+                    <Button
+                    variant={"outline"}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-2"
+                        className="h-5 w-5 mr-1"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"

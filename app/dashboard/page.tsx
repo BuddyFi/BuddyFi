@@ -6,7 +6,7 @@ const RepoList = dynamic(() => import("./RepoList"), { ssr: true });
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import GithubContributions from "./GithubContributions";
+import GithubContributions from "../../components/GithubContributions";
 
 export default async function DashboardPage() {
   try {
