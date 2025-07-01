@@ -25,6 +25,29 @@ export async function GET(request: Request) {
     });
     const user = userRes.data;
 
+    // Fetch all repos to calculate totalStars
+    const reposRes = await axios.get(`https://api.github.com/users/${user.login}/repos?per_page=100`, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    const repos = reposRes.data;
+    const totalStars = Array.isArray(repos)
+      ? repos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0)
+      : 0;
+
+    // Fetch recent public events to calculate totalCommits
+    const eventsRes = await axios.get(`https://api.github.com/users/${user.login}/events/public?per_page=100`, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+    const events = eventsRes.data;
+    let totalCommits = 0;
+    if (Array.isArray(events)) {
+      for (const event of events) {
+        if (event.type === "PushEvent" && event.payload && Array.isArray(event.payload.commits)) {
+          totalCommits += event.payload.commits.length;
+        }
+      }
+    }
+
     const userData = {
       login: user.login,
       name: user.name || "",
@@ -39,6 +62,8 @@ export async function GET(request: Request) {
       following: user.following || 0,
       public_repos: user.public_repos || 0,
       created_at: user.created_at,
+      totalStars,
+      totalCommits,
     };
 
     // Set cookie using Response object for reliability

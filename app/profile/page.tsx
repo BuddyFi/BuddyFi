@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 "use client";
@@ -49,6 +50,8 @@ import {
 import { useRouter } from "next/navigation";
 
 type IpfsData = {
+  location: string;
+  joinedDate: string;
   name: string;
   bio: string;
   skills: string[];
@@ -68,125 +71,6 @@ type GithubStats = {
   totalCommits?: number;
 };
 
-// Mock user data
-const userData = {
-  name: "Alex Chen",
-  username: "alexdev",
-  walletAddress: "0x1234...5678",
-  avatar: "/placeholder.svg?height=120&width=120",
-  bio: "Full-stack developer passionate about Web3 and DeFi. Building the future one commit at a time.",
-  location: "San Francisco, CA",
-  website: "alexchen.dev",
-  joinedDate: "March 2023",
-  githubStats: {
-    followers: 1247,
-    following: 342,
-    publicRepos: 87,
-    totalStars: 2341,
-    totalCommits: 1856,
-    contributionsThisYear: 847,
-  },
-  skills: ["React", "TypeScript", "Solidity", "Node.js", "Python", "GraphQL"],
-  badges: [
-    {
-      id: 1,
-      name: "Early Adopter",
-      icon: Crown,
-      color: "text-yellow-400",
-      description: "Joined BuddyFi in beta",
-    },
-    {
-      id: 2,
-      name: "Team Player",
-      icon: Users,
-      color: "text-blue-400",
-      description: "Formed 5+ successful teams",
-    },
-    {
-      id: 3,
-      name: "Hackathon Hero",
-      icon: Trophy,
-      color: "text-purple-400",
-      description: "Won 3 hackathons",
-    },
-    {
-      id: 4,
-      name: "Code Warrior",
-      icon: Zap,
-      color: "text-green-400",
-      description: "500+ commits this year",
-    },
-    {
-      id: 5,
-      name: "Open Source",
-      icon: Heart,
-      color: "text-red-400",
-      description: "10+ OSS contributions",
-    },
-    {
-      id: 6,
-      name: "Mentor",
-      icon: Target,
-      color: "text-orange-400",
-      description: "Helped 20+ developers",
-    },
-  ],
-  recentRepos: [
-    {
-      name: "defi-yield-optimizer",
-      description:
-        "Smart contract suite for optimizing DeFi yield farming strategies",
-      language: "Solidity",
-      stars: 234,
-      forks: 45,
-      updatedAt: "2 days ago",
-      isPrivate: false,
-    },
-    {
-      name: "web3-auth-sdk",
-      description: "TypeScript SDK for seamless Web3 authentication",
-      language: "TypeScript",
-      stars: 156,
-      forks: 23,
-      updatedAt: "5 days ago",
-      isPrivate: false,
-    },
-    {
-      name: "nft-marketplace-dapp",
-      description:
-        "Full-stack NFT marketplace with React frontend and smart contracts",
-      language: "JavaScript",
-      stars: 89,
-      forks: 12,
-      updatedAt: "1 week ago",
-      isPrivate: false,
-    },
-    {
-      name: "crypto-portfolio-tracker",
-      description: "Real-time cryptocurrency portfolio tracking application",
-      language: "Python",
-      stars: 67,
-      forks: 8,
-      updatedAt: "2 weeks ago",
-      isPrivate: true,
-    },
-  ],
-  contributionData: [
-    { date: "2024-01", commits: 45 },
-    { date: "2024-02", commits: 67 },
-    { date: "2024-03", commits: 89 },
-    { date: "2024-04", commits: 123 },
-    { date: "2024-05", commits: 98 },
-    { date: "2024-06", commits: 156 },
-    { date: "2024-07", commits: 134 },
-    { date: "2024-08", commits: 178 },
-    { date: "2024-09", commits: 145 },
-    { date: "2024-10", commits: 167 },
-    { date: "2024-11", commits: 189 },
-    { date: "2024-12", commits: 203 },
-  ],
-};
-
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("overview");
   const { publicKey } = useWallet();
@@ -199,6 +83,11 @@ export default function ProfilePage() {
   const [isGithubLinked, setIsGithubLinked] = useState(false);
   const [showGithubModal, setShowGithubModal] = useState(false);
   const [githubStats, setGithubStats] = useState<GithubStats | null>(null);
+  const [githubRepos, setGithubRepos] = useState<any[]>([]);
+  const [showAllRepos, setShowAllRepos] = useState(false);
+  const [allReposFetched, setAllReposFetched] = useState(false);
+  const [loadingRepos, setLoadingRepos] = useState(false);
+  const [githubActivity, setGithubActivity] = useState<any[]>([]);
   const router = useRouter();
 
   const getLanguageColor = (language: string) => {
@@ -252,6 +141,22 @@ export default function ProfilePage() {
           const data = await res.json();
           setGithubStats(data);
           setIsGithubLinked(true);
+
+          // Fetch repositories (default: 10)
+          setLoadingRepos(true);
+          const reposRes = await fetch("/api/github/repos");
+          if (reposRes.ok) {
+            const repos = await reposRes.json();
+            setGithubRepos(repos);
+          }
+          setLoadingRepos(false);
+
+          // Fetch activity
+          const activityRes = await fetch("/api/github/activity");
+          if (activityRes.ok) {
+            const activity = await activityRes.json();
+            setGithubActivity(activity);
+          }
         } else {
           setIsGithubLinked(false);
         }
@@ -261,6 +166,21 @@ export default function ProfilePage() {
     }
     checkGithub();
   }, []);
+
+  // Handler to show all repos and fetch if needed
+  const handleShowAllRepos = async () => {
+    if (!allReposFetched) {
+      setLoadingRepos(true);
+      const res = await fetch("/api/github/repos?all=true");
+      if (res.ok) {
+        const allRepos = await res.json();
+        setGithubRepos(allRepos);
+        setAllReposFetched(true);
+      }
+      setLoadingRepos(false);
+    }
+    setShowAllRepos((prev) => !prev);
+  };
 
   if (loading) {
     return (
@@ -333,7 +253,7 @@ export default function ProfilePage() {
                 <div className="text-center mb-6">
                   <div className="relative inline-block mb-4">
                     <img
-                      src="./avatar.avif"
+                      src={data?.avatar || "./avatar.avif"}
                       alt={name}
                       className="w-24 h-24 rounded-2xl border-2 border-slate-700"
                     />
@@ -343,10 +263,12 @@ export default function ProfilePage() {
                   </div>
                   <h2 className="text-xl font-bold text-white mb-1">{name}</h2>
                   <p className="text-gray-400 text-sm mb-2">
-                    @{userData.username}
+                    @{data?.social?.github || "username"}
                   </p>
                   <div className="text-xs text-gray-500 font-mono bg-slate-800/50 rounded-lg px-2 py-1">
-                    {userData.walletAddress}
+                    {data?.walletAddress
+                      ? `${data.walletAddress.slice(0, 4)}...${data.walletAddress.slice(-4)}`
+                      : ''}
                   </div>
                 </div>
 
@@ -357,20 +279,20 @@ export default function ProfilePage() {
                 <div className="space-y-2 text-sm text-gray-400">
                   <div className="flex items-center gap-2">
                     <MapPin size={14} />
-                    <span>{userData.location}</span>
+                    <span>{data?.location || "-"}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <LinkIcon size={14} />
                     <a
-                      href={`https://${userData.website}`}
+                      href={`https://${data?.social?.github || "username"}.github.io`}
                       className="text-blue-400 hover:underline"
                     >
-                      {userData.website}
+                      {data?.social?.github || "username"}.github.io
                     </a>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={14} />
-                    <span>Joined {userData.joinedDate}</span>
+                    <span>Joined {data?.joinedDate || "-"}</span>
                   </div>
                 </div>
               </div>
@@ -489,34 +411,10 @@ export default function ProfilePage() {
                   <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-6">
                     <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                       <Trophy size={20} />
-                      Earned Badges{" "}
-                      <span className="text-sm text-gray-300 font-medium ml-2">
-                        ( This data is hardcoded )
-                      </span>
+                      Earned Badges
                     </h3>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {userData.badges.map((badge) => (
-                        <div
-                          key={badge.id}
-                          className="group bg-slate-800/30 border border-slate-700/50 rounded-xl p-4 hover:bg-slate-700/30 transition-all duration-300 hover:scale-105"
-                        >
-                          <div className="flex items-center gap-3 mb-2">
-                            <div
-                              className={`w-10 h-10 rounded-xl bg-slate-700/50 flex items-center justify-center ${badge.color}`}
-                            >
-                              <badge.icon size={20} />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-white text-sm">
-                                {badge.name}
-                              </h4>
-                            </div>
-                          </div>
-                          <p className="text-xs text-gray-400 leading-relaxed">
-                            {badge.description}
-                          </p>
-                        </div>
-                      ))}
+                      <div className="text-gray-400">No badges data</div>
                     </div>
                   </div>
 
@@ -529,7 +427,7 @@ export default function ProfilePage() {
                     <div className="mb-4">
                       {/* Real GitHub Contribution Graph */}
                       <GithubContributions
-                        username={data?.social?.github || userData.username}
+                        username={data?.social?.github || "username"}
                         days={30}
                       />
                     </div>
@@ -593,86 +491,45 @@ export default function ProfilePage() {
                       </Dialog>
                     </div>
                   ) : (
-                    <>
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-gray-400 hover:text-white"
-                          >
-                            <Filter size={16} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-gray-400 hover:text-white"
-                          >
-                            <Search size={16} />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        {userData.recentRepos.map((repo, index) => (
-                          <div
-                            key={index}
-                            className="group bg-slate-800/30 border border-slate-700/50 rounded-xl p-5 hover:bg-slate-700/30 transition-all duration-300"
-                          >
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex items-center gap-3">
-                                <BookOpen
-                                  size={18}
-                                  className="text-blue-400 mt-0.5"
-                                />
-                                <div>
-                                  <h4 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+                    loadingRepos ? (
+                      <div className="text-gray-400">Loading repositories...</div>
+                    ) : githubRepos.length > 0 ? (
+                      (() => {
+                        const filteredRepos = githubRepos.filter((repo) => !repo.fork);
+                        const displayRepos = showAllRepos ? filteredRepos : filteredRepos.slice(0, 6);
+                        return (
+                          <>
+                            <div className="grid gap-4 mt-4">
+                              {displayRepos.map((repo) => (
+                                <div key={repo.id} className="bg-slate-800/50 rounded-lg p-4">
+                                  <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="text-blue-100 font-semibold hover:underline">
                                     {repo.name}
-                                  </h4>
-                                  {repo.isPrivate && (
-                                    <span className="inline-block px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded-full mt-1">
-                                      Private
-                                    </span>
-                                  )}
+                                  </a>
+                                  <p className="text-gray-400 text-sm">{repo.description || 'No description'}</p>
+                                  <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                                    <span>⭐ {repo.stargazers_count}</span>
+                                    <span>🍴 {repo.forks_count}</span>
+                                    <span>{repo.language || 'N/A'}</span>
+                                  </div>
                                 </div>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
-                                <ExternalLink size={14} />
-                              </Button>
+                              ))}
                             </div>
-                            <p className="text-gray-300 text-sm mb-4 leading-relaxed">
-                              {repo.description}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-4 text-sm text-gray-400">
-                                <div className="flex items-center gap-1">
-                                  <div
-                                    className={`w-3 h-3 rounded-full ${getLanguageColor(
-                                      repo.language
-                                    )}`}
-                                  />
-                                  <span>{repo.language}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Star size={14} />
-                                  <span>{repo.stars}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <GitFork size={14} />
-                                  <span>{repo.forks}</span>
-                                </div>
+                            {filteredRepos.length > 6 && (
+                              <div className="mt-4 text-center">
+                                <Button
+                                  className="text-sm px-4 py-2 border border-gray-500 rounded-md text-indigo-300 hover:bg-gray-700 transition bg-transparent"
+                                  onClick={handleShowAllRepos}
+                                >
+                                  {showAllRepos ? 'Show Less' : 'Show All'}
+                                </Button>
                               </div>
-                              <div className="text-xs text-gray-500">
-                                Updated {repo.updatedAt}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
+                            )}
+                          </>
+                        );
+                      })()
+                    ) : (
+                      <div className="text-gray-400">No repositories data</div>
+                    )
                   )}
                 </div>
               )}
@@ -733,77 +590,18 @@ export default function ProfilePage() {
                       </Dialog>
                     </div>
                   ) : (
-                    <>
-                      <div className="space-y-4">
-                        <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-xl">
-                          <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                            <GitCommit size={16} className="text-green-400" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-white text-sm">
-                              Pushed 3 commits to{" "}
-                              <span className="text-blue-400">
-                                defi-yield-optimizer
-                              </span>
-                            </p>
-                            <p className="text-gray-400 text-xs mt-1">
-                              2 hours ago
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-xl">
-                          <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                            <GitPullRequest
-                              size={16}
-                              className="text-purple-400"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-white text-sm">
-                              Opened pull request in{" "}
-                              <span className="text-blue-400">
-                                web3-auth-sdk
-                              </span>
-                            </p>
-                            <p className="text-gray-400 text-xs mt-1">
-                              5 hours ago
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-xl">
-                          <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                            <Star size={16} className="text-yellow-400" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-white text-sm">
-                              Starred{" "}
-                              <span className="text-blue-400">
-                                ethereum/solidity
-                              </span>
-                            </p>
-                            <p className="text-gray-400 text-xs mt-1">
-                              1 day ago
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4 p-4 bg-slate-800/30 rounded-xl">
-                          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                            <Eye size={16} className="text-blue-400" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-white text-sm">
-                              Started watching{" "}
-                              <span className="text-blue-400">
-                                OpenZeppelin/openzeppelin-contracts
-                              </span>
-                            </p>
-                            <p className="text-gray-400 text-xs mt-1">
-                              2 days ago
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </>
+                    githubActivity.length > 0 ? (
+                      <ul className="space-y-4">
+                        {githubActivity.map((event, idx) => (
+                          <li key={idx} className="text-gray-300 text-sm">
+                            <span className="font-semibold">{event.type}</span> in <span className="text-blue-400">{event.repo?.name}</span>
+                            <span className="ml-2 text-gray-500">{new Date(event.created_at).toLocaleString()}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="text-gray-400">No activity data</div>
+                    )
                   )}
                 </div>
               )}
