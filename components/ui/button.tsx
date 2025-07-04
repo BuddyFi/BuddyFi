@@ -20,6 +20,8 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        mintButton: "bg-gradient-to-r from-purple-600 to-blue-500/40 hover:from-purple-600/30 hover:to-blue-500 cursor-pointer text-white px-8 py-3 disabled:opacity-50 transition duration-300",
+        buttons: "cursor-pointer text-white bg-purple-500/50 hover:bg-white hover:text-purple-500 font-semibold transition-smooth duration-200"
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
