@@ -179,12 +179,9 @@ export default function ProfileCreatePage() {
       ctx.font = "14px monospace";
       ctx.fillStyle = "#64748b";
       ctx.textAlign = "left";
-      ctx.fillText(
-        `Transaction: ${txId.substring(0, 32)}...`,
-        60,
-        420
-      );
+      ctx.fillText(`Transaction: ${txId.substring(0, 32)}...`, 60, 420);
       ctx.fillText(`IPFS: ${ipfsCid}`, 60, 445);
+      ctx.fillText(`Wallet: ${publicKey?.toString()}`, 60, 445);
 
       // Add date
       ctx.textAlign = "center";
@@ -1189,7 +1186,7 @@ export default function ProfileCreatePage() {
                         variant="ghost"
                         onClick={() =>
                           window.open(
-                            `https://explorer.solana.com/tx/${txId}`,
+                            `https://explorer.solana.com/tx/${txId}?cluster=devnet`,
                             "_blank"
                           )
                         }
