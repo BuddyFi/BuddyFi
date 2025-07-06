@@ -55,13 +55,11 @@ type IpfsData = {
   joinedDate: string;
   name: string;
   bio: string;
-  skills: string[];
+  portfolio: string;
+  languages: string[];
   avatar?: string;
-  social: {
-    twitter?: string;
-    github?: string;
-    linkedin?: string;
-  };
+  githubProfile: string;
+ 
   walletAddress: string;
 };
 
@@ -205,7 +203,7 @@ export default function ProfilePage() {
     );
   }
 
-  const { name, bio, skills, social } = data;
+  const { name, bio, languages, githubProfile, portfolio } = data;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-buddyfi-background to-buddyfi-background/80">
@@ -264,7 +262,7 @@ export default function ProfilePage() {
                   </div>
                   <h2 className="text-xl font-bold text-white mb-1">{name}</h2>
                   <p className="text-gray-400 text-sm mb-2">
-                    @{data?.social?.github || "username"}
+                    @{data?.githubProfile || "username"}
                   </p>
                   <div className="text-xs text-gray-500 font-mono bg-slate-800/50 rounded-lg px-2 py-1">
                     {data?.walletAddress
@@ -285,10 +283,10 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-2">
                     <LinkIcon size={14} />
                     <a
-                      href={`https://${data?.social?.github || "username"}.github.io`}
+                      href={`${portfolio}`}
                       className="text-blue-400 hover:underline"
                     >
-                      {data?.social?.github || "username"}.github.io
+                      {portfolio}
                     </a>
                   </div>
                   <div className="flex items-center gap-2">
@@ -298,14 +296,14 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Skills */}
+              {/* languages */}
               <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-6">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <Code2 size={18} />
                   Skills
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {skills.map((skill, index) => (
+                  {languages.map((skill, index) => (
                     <span
                       key={index}
                       className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium"
@@ -428,7 +426,7 @@ export default function ProfilePage() {
                     <div className="mb-4">
                       {/* Real GitHub Contribution Graph */}
                       <GithubContributions
-                        username={data?.social?.github || "username"}
+                        username={data?.githubProfile || "username"}
                         days={30}
                       />
                     </div>

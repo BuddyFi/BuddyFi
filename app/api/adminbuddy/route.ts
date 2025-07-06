@@ -28,7 +28,7 @@ export async function GET(request: Request) {
 
   try {
     // Step 1: Get list of pins from Pinata
-    const response = await fetch("https://api.pinata.cloud/data/pinList", {
+    const response = await fetch("https://api.pinata.cloud/data/pinList?pageLimit=1000", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -47,6 +47,7 @@ export async function GET(request: Request) {
     
     // Get all pins
     const pins = data.rows || [];
+    console.log('Total pins fetched from Pinata:', pins.length);
     
     if (pins.length === 0) {
       return new Response(
@@ -65,6 +66,7 @@ export async function GET(request: Request) {
           );
           
           if (!ipfsResponse.ok) {
+            console.log('Failed to fetch IPFS for pin:', ipfsHash);
             return null;
           }
           
@@ -74,6 +76,7 @@ export async function GET(request: Request) {
             userData
           };
         } catch (error) {
+          console.log('Error fetching/parsing IPFS for pin:', ipfsHash, error);
           return null;
         }
       })
@@ -81,6 +84,7 @@ export async function GET(request: Request) {
 
     // Filter out any failed requests
     const validUsers = usersData.filter(user => user !== null);
+    console.log('Valid user profiles fetched from IPFS:', validUsers.length);
 
     // Group users by wallet address and keep only the most recent profile
     const latestProfilesByWallet = validUsers.reduce((acc: { [key: string]: any }, current) => {
@@ -94,6 +98,9 @@ export async function GET(request: Request) {
       }
       return acc;
     }, {});
+
+    const uniqueWallets = Object.keys(latestProfilesByWallet);
+    // console.log('Unique wallet addresses found:', uniqueWallets.length, uniqueWallets);
 
     // Convert the object back to an array
     const uniqueLatestProfiles = Object.values(latestProfilesByWallet);

@@ -177,7 +177,7 @@ const TeamDashboard = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsTrialExpired(true);
-    }, 5000); // 5 seconds delay
+    }, 15000); // 5 seconds delay
 
     return () => clearTimeout(timer);
   }, []); // Empty dependency array means this runs once when component mounts
@@ -273,7 +273,7 @@ const TeamDashboard = () => {
   const progressPercentage = Math.round((completedTasks / tasks.length) * 100);
 
   // Time remaining calculation
-  const hackathonEndDate = new Date("June 30, 2025").getTime();
+  const hackathonEndDate = new Date("July 30, 2025").getTime();
   const currentDate = new Date().getTime();
   const timeRemaining = hackathonEndDate - currentDate;
   const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
