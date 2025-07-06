@@ -179,7 +179,11 @@ export default function ProfileCreatePage() {
       ctx.font = "14px monospace";
       ctx.fillStyle = "#64748b";
       ctx.textAlign = "left";
-      ctx.fillText(`Transaction: ${txId}`, 60, 420);
+      ctx.fillText(
+        `Transaction: ${txId.substring(0, 32)}...`,
+        60,
+        420
+      );
       ctx.fillText(`IPFS: ${ipfsCid}`, 60, 445);
 
       // Add date
