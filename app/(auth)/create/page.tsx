@@ -15,6 +15,12 @@ import {
   Sparkles,
   MessageSquare,
   Check,
+  Copy,
+  ExternalLink,
+  Eye,
+  ArrowRight,
+  Share2,
+  Download,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -23,6 +29,8 @@ import ConnectWalletButton from "@/components/solana/ConnectWalletButton";
 import { setCID } from "@/utils/cidStore";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function ProfileCreatePage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -59,8 +67,151 @@ export default function ProfileCreatePage() {
   const [error, setError] = useState("");
   const [txId, setTxId] = useState("");
   const [ipfsCid, setIpfsCid] = useState("");
-
   const totalSteps = 8;
+  const [copied, setCopied] = useState<string | null>(null);
+  const copyToClipboard = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(type);
+      setTimeout(() => setCopied(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      setCopied(`${type}-error`);
+      setTimeout(() => setCopied(null), 2000);
+    }
+  };
+  const shareProfile = async () => {
+    const profileUrl = `${window.location.origin}/profile/${ipfsCid}`;
+    const shareData = {
+      title: "My BuddyFi Dev Profile",
+      text: "Check out my developer profile on BuddyFi! 🚀",
+      url: profileUrl,
+    };
+
+    // Try native sharing first
+    if (
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare(shareData)
+    ) {
+      try {
+        await navigator.share(shareData);
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          console.error("Error sharing:", err);
+          // Fallback to copying link
+          await copyToClipboard(profileUrl, "share");
+        }
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await copyToClipboard(profileUrl, "share");
+    }
+  };
+
+  const downloadCertificate = async () => {
+    try {
+      // Create a canvas for the certificate
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      // Set canvas size
+      canvas.width = 800;
+      canvas.height = 600;
+
+      // Create gradient background
+      const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      gradient.addColorStop(0, "#1e293b");
+      gradient.addColorStop(0.5, "#334155");
+      gradient.addColorStop(1, "#0f172a");
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add border
+      ctx.strokeStyle = "#10b981";
+      ctx.lineWidth = 8;
+      ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+      // Add title
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 48px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("BuddyFi Certificate", canvas.width / 2, 120);
+
+      // Add subtitle
+      ctx.font = "24px Arial";
+      ctx.fillStyle = "#10b981";
+      ctx.fillText("Developer Profile Verification", canvas.width / 2, 160);
+
+      // Add main text
+      ctx.font = "32px Arial";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText("This certifies that", canvas.width / 2, 220);
+
+      // Add user name placeholder
+      ctx.font = "bold 36px Arial";
+      ctx.fillStyle = "#a855f7";
+      ctx.fillText("Developer", canvas.width / 2, 280);
+
+      // Add description
+      ctx.font = "20px Arial";
+      ctx.fillStyle = "#cbd5e1";
+      ctx.fillText(
+        "has successfully created and verified",
+        canvas.width / 2,
+        320
+      );
+      ctx.fillText(
+        "their developer profile on the blockchain",
+        canvas.width / 2,
+        350
+      );
+
+      // Add transaction info
+      ctx.font = "14px monospace";
+      ctx.fillStyle = "#64748b";
+      ctx.textAlign = "left";
+      ctx.fillText(`Transaction: ${txId}`, 60, 420);
+      ctx.fillText(`IPFS: ${ipfsCid}`, 60, 445);
+
+      // Add date
+      ctx.textAlign = "center";
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText(
+        `Issued on ${new Date().toLocaleDateString()}`,
+        canvas.width / 2,
+        520
+      );
+
+      // Convert to blob and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `buddyfi-certificate-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+      }, "image/png");
+    } catch (error) {
+      console.error("Error generating certificate:", error);
+      // Show error feedback to user
+      setCopied("certificate-error");
+      setTimeout(() => setCopied(null), 3000);
+    }
+  };
 
   const languageOptions = [
     "JavaScript",
@@ -148,6 +299,7 @@ export default function ProfileCreatePage() {
     try {
       setLoading(true);
       setError("");
+      console.log("Starting profile submission...");
 
       const res = await fetch("/api/ipfs", {
         method: "POST",
@@ -160,6 +312,7 @@ export default function ProfileCreatePage() {
 
       const { cid, error } = await res.json();
       if (error) throw new Error(error);
+      console.log("IPFS upload successful, CID:", cid);
 
       setCID(cid);
       setIpfsCid(cid);
@@ -169,18 +322,29 @@ export default function ProfileCreatePage() {
         publicKey,
         sendTransaction,
         cid,
-        formData.skills || ["nextjs", "solana"]
+        formData.languages || ["nextjs", "solana"]
       );
+      console.log("Transaction successful, signature:", txSignature);
 
       setTxId(txSignature);
-    } catch (err) {
+      console.log(
+        "State should be updated - txId:",
+        txSignature,
+        "ipfsCid:",
+        cid
+      );
+    } catch (err: unknown) {
+      let errorMessage = "Profile creation failed";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
       console.error("Profile creation error:", err);
-      setError(err instanceof Error ? err.message : "Profile creation failed");
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-
-    console.log("txId", txId, "ipfsCid", ipfsCid, "error", error);
   };
 
   if (!publicKey) {
@@ -932,12 +1096,6 @@ export default function ProfileCreatePage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-950">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-      </div>
-
       {/* Header */}
       <Navbar />
 
@@ -968,42 +1126,212 @@ export default function ProfileCreatePage() {
         )}
 
         {txId && ipfsCid ? (
-          <div className="p-6 bg-green-500/10 border border-green-500 rounded-md">
-            <div className="flex items-center gap-2 text-green-400 text-lg font-semibold mb-3">
-              <CheckCircle className="w-6 h-6" />
-              Profile Created Successfully!
-            </div>
-            <p className="text-sm text-gray-300 mb-3">
-              Your profile is now live on-chain and stored on IPFS.
-            </p>
-            <div className="mb-3">
-              <div className="font-semibold text-gray-200">Transaction:</div>
-              <a
-                href={`https://explorer.solana.com/tx/${txId}?cluster=devnet`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-400 underline break-words"
-              >
-                {txId}
-              </a>
-            </div>
-            <div className="mb-3">
-              <div className="font-semibold text-gray-200">IPFS CID:</div>
-              <span className="font-mono text-sm break-words text-gray-300">
-                {ipfsCid}
-              </span>
-            </div>
+          <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
+            <div className="text-center mb-8 transition-all duration-1000 transform">
+              <div className="flex items-center justify-center mb-4">
+                <CheckCircle className="w-16 h-16 text-green-400 animate-pulse" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                Hello Buddy! 🎉
+              </h1>
+              <p className="text-xl text-slate-300">
+                Your Dev Profile is created and stored on-chain.
+              </p>
+            </div>{" "}
+            <Card className="border-green-500/50 bg-slate-800/50 backdrop-blur-sm transition-all duration-1000 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-green-500/20">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <CheckCircle className="w-8 h-8 text-green-400 animate-pulse" />
+                  <h2 className="text-2xl font-bold text-green-400">
+                    Profile Created Successfully!
+                  </h2>
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-500/20 text-green-300 border-green-500/30"
+                  >
+                    Live
+                  </Badge>
+                </div>
 
-            <Link
-              href="/profile"
-              className="inline-block mt-4 px-5 py-2 bg-indigo-600 rounded-full hover:bg-indigo-700 transition"
-            >
-              View Profile
-            </Link>
+                <p className="text-slate-300 mb-8 text-lg">
+                  Your profile is now live on-chain and stored on IPFS. You can
+                  check status on the links given below.
+                </p>
+
+                {/* Transaction details with copy functionality */}
+                <div className="space-y-6">
+                  <div className="group">
+                    <label className="block text-sm font-medium text-slate-400 mb-2">
+                      Transaction Hash:
+                    </label>
+                    <div className="flex items-center gap-2 p-4 bg-slate-700/50 rounded-lg border border-slate-600 group-hover:border-purple-500/50 transition-colors">
+                      <code className="flex-1 text-sm text-purple-300 font-mono break-all">
+                        {txId}
+                      </code>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(txId, "transaction")}
+                        className="shrink-0 hover:bg-purple-500/20"
+                      >
+                        {copied === "transaction" ? (
+                          <CheckCircle className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() =>
+                          window.open(
+                            `https://explorer.solana.com/tx/${txId}`,
+                            "_blank"
+                          )
+                        }
+                        className="shrink-0 hover:bg-blue-500/20"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="group">
+                    <label className="block text-sm font-medium text-slate-400 mb-2">
+                      IPFS CID:
+                    </label>
+                    <div className="flex items-center gap-2 p-4 bg-slate-700/50 rounded-lg border border-slate-600 group-hover:border-blue-500/50 transition-colors">
+                      <code className="flex-1 text-sm text-blue-300 font-mono break-all">
+                        {ipfsCid}
+                      </code>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(ipfsCid, "ipfs")}
+                        className="shrink-0 hover:bg-blue-500/20"
+                      >
+                        {copied === "ipfs" ? (
+                          <CheckCircle className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() =>
+                          window.open(
+                            `https://ipfs.io/ipfs/${ipfsCid}`,
+                            "_blank"
+                          )
+                        }
+                        className="shrink-0 hover:bg-blue-500/20"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <div className="py-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Link href="/profile">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 group"
+                  >
+                    <Eye className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                    View Profile
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={shareProfile}
+                  className="border-slate-600 hover:border-purple-500 hover:bg-purple-500/10 transform hover:scale-105 transition-all duration-200 group bg-transparent"
+                >
+                  {copied === "share" ? (
+                    <>
+                      <CheckCircle className="w-5 h-5 mr-2 text-green-400" />
+                      Link Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                      Share Profile
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={downloadCertificate}
+                  className="border-slate-600 hover:border-blue-500 hover:bg-blue-500/10 transform hover:scale-105 transition-all duration-200 group bg-transparent"
+                >
+                  {copied === "certificate-error" ? (
+                    <>
+                      <span className="w-5 h-5 mr-2 text-red-400">✕</span>
+                      Error
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-5 h-5 mr-2 group-hover:animate-bounce" />
+                      Download Certificate
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+            <div className="py-8">
+              <Card className="bg-slate-800/30 border-slate-700">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+                    <Sparkles className="w-5 h-5 mr-2 text-yellow-400" />
+                    What&apos;s Next?
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Link href="/">
+                      <div className="flex items-start gap-3 p-4 rounded-lg bg-slate-700/30 hover:bg-slate-700/50 transition-colors cursor-pointer group">
+                        <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                          <span className="text-purple-400 font-bold">1</span>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-white">
+                            Connect with Buddies
+                          </h4>
+                          <p className="text-sm text-slate-400">
+                            Start building your developer network
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                    <Link href="/">
+                      <div className="flex items-start gap-3 p-4 rounded-lg bg-slate-700/30 hover:bg-slate-700/50 transition-colors cursor-pointer group">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                          <span className="text-blue-400 font-bold">2</span>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-white">
+                            Explore Projects
+                          </h4>
+                          <p className="text-sm text-slate-400">
+                            Discover exciting collaboration opportunities
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         ) : (
           <>
-            <div className="z-100 text-3xl text-white font-bold">
+            <div className="z-100 text-center py-4 md:text-5xl text-3xl text-neutral-300 font-bold">
               BuddyFi Onboarding...
             </div>
             <main className="relative z-10 container mx-auto px-4 py-4">

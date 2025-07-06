@@ -55,7 +55,7 @@ type IpfsData = {
   joinedDate: string;
   name: string;
   bio: string;
-  skills: string[];
+  languages: string[];
   avatar?: string;
   social: {
     twitter?: string;
@@ -205,7 +205,7 @@ export default function ProfilePage() {
     );
   }
 
-  const { name, bio, skills, social } = data;
+  const { name, bio, languages, social } = data;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-buddyfi-background to-buddyfi-background/80">
@@ -298,14 +298,14 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Skills */}
+              {/* languages */}
               <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-6">
                 <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                   <Code2 size={18} />
                   Skills
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {skills.map((skill, index) => (
+                  {languages.map((skill, index) => (
                     <span
                       key={index}
                       className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium"
