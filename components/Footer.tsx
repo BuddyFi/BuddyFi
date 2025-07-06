@@ -22,7 +22,7 @@ const Footer = () => {
               <span className="">Twitter</span>
             </a>
             <a
-              href="https://github.com/karancodebase/buddyfi"
+              href="https://github.com/BuddyFi/BuddyFi"
               className="text-gray-400 hover:text-gray-300 flex gap-1"
               target="_blank"
             >
@@ -38,7 +38,7 @@ const Footer = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="https://github.com/karancodebase/buddyfi">
+              <span className="https://github.com/BuddyFi/BuddyFi">
                 GitHub
               </span>
             </a>

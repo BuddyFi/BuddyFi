@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 
   try {
     // Step 1: Get list of pins
-    const response = await fetch("https://api.pinata.cloud/data/pinList", {
+    const response = await fetch("https://api.pinata.cloud/data/pinList?pageLimit=1000", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
