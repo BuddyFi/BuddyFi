@@ -313,7 +313,7 @@ export default function ProfileCreatePage() {
                       </label>
                     ))}
                   </div>
-                  <input
+                  {/* <input
                     type="text"
                     value={formData.otherDomain}
                     onChange={(e) =>
@@ -321,7 +321,7 @@ export default function ProfileCreatePage() {
                     }
                     placeholder="Other domain..."
                     className="w-full mt-6 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
-                  />
+                  /> */}
                 </div>
 
                 <div>
@@ -740,7 +740,7 @@ export default function ProfileCreatePage() {
                       onChange={(e) =>
                         updateFormData("openToSideProjects", e.target.checked)
                       }
-                      className="peer appearance-none w-5 h-5 border border-slate-600 bg-slate-800 rounded-sm checked:bg-pink-500 checked:border-pink-400 transition"
+                      className="peer appearance-none w-5 h-5 border border-slate-600 bg-slate-800 rounded-xs checked:bg-blue-500 transition"
                     />
                     <Check
                       className="absolute top-0 left-0 w-5 h-5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
@@ -915,7 +915,7 @@ export default function ProfileCreatePage() {
                     onChange={(e) =>
                       updateFormData("readyToMatch", e.target.checked)
                     }
-                    className="w-4 h-4 text-blue-500 bg-slate-800 border-slate-600 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-blue-500 bg-slate-800 border-slate-600 rounded focus:ring-blue-500 p-2 rounded-xs"
                   />
                   <span className="text-white font-semibold">
                     I&apos;m ready to get matched & build legendary hacks 🚀

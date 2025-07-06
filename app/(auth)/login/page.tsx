@@ -13,7 +13,7 @@ export default function LoginPage() {
         </div>
         <div className="mt-8 space-y-6">
           <div>
-            <a
+            <Link
               href="/api/github/login"
               className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-900 hover:bg-gray-700 md:py-4 md:text-lg md:px-10 transition-colors"
             >
@@ -30,7 +30,7 @@ export default function LoginPage() {
                 />
               </svg>
               Sign in with GitHub
-            </a>
+            </Link>
           </div>
           <div className="text-center text-sm">
             <p className="text-gray-500">
