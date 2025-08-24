@@ -71,7 +71,7 @@ export function SubscriptionCard({ subscription }: SubscriptionProps) {
 
       // Redirect to subscription dashboard after a short delay
       setTimeout(() => {
-        router.push("/dashboard/subscription")
+        router.push("/subscription")
       }, 2000)
     } catch (error) {
       console.error("Payment failed:", error)

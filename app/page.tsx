@@ -65,7 +65,7 @@ export default function Home() {
                 {/* Glow Effect */}
                 <div className="inset-0" />
 
-                <div className="relative md:px-6 py-6 md:p-12">
+                <div className="relative md:px-6 py-6 md:p-20">
                   <h1 className="text-3xl md:text-6xl font-black">
                     <div>
                       still shipping  <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
